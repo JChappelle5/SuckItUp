@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float BASE_SPEED = 5;
     [SerializeField] private float JUMP_FORCE = 5f;
     private Rigidbody2D rb;
-    private bool isGrounded = false; // New variable to track if the player is on the ground
+    public bool isGrounded = false; // New variable to track if the player is on the ground
 
     void Start()
     {

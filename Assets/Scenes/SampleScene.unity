@@ -534,9 +534,8 @@ MonoBehaviour:
   stickableLayer:
     serializedVersion: 2
     m_Bits: 8
-  stickRange: 5
+  stickRange: 0.8
   playerRb: {fileID: 566081606}
-  launchForce: 5
   isStuck: 0
 --- !u!50 &1143418946
 Rigidbody2D:
