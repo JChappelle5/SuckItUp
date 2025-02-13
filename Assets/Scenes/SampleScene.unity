@@ -534,7 +534,6 @@ MonoBehaviour:
   stickableLayer:
     serializedVersion: 2
     m_Bits: 8
-  stickRange: 0.8
   playerRb: {fileID: 566081606}
   isStuck: 0
 --- !u!50 &1143418946
@@ -562,7 +561,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!255 &1143418947
 FixedJoint2D:
@@ -579,8 +578,8 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.87351996, y: 0.07459998}
+  m_Anchor: {x: 0.004475331, y: 1.3337847}
+  m_ConnectedAnchor: {x: 0.61417806, y: 0.07542175}
   m_DampingRatio: 1
   m_Frequency: 5
 --- !u!70 &1143418948
@@ -617,8 +616,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.055992812, y: -3.3986304}
-  m_Size: {x: 2.0105467, y: 1.2119299}
+  m_Offset: {x: 0.017627526, y: -3.4131198}
+  m_Size: {x: 2.2100458, y: 1.2409166}
   m_Direction: 1
 --- !u!1 &1545231931
 GameObject:
