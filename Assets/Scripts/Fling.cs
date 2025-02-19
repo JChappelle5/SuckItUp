@@ -9,6 +9,8 @@ public class PlungerMovement : MonoBehaviour
     public float maxLaunchForce = 20f; // Maximum launch power
     private float leanAngle = 0f;
     private bool isCharging = false; // Detect if pulling back
+    public float normalFactor = 1f;
+    public float slowdownFactor = 0.75f;
 
     void Awake()
     {
@@ -21,8 +23,20 @@ public class PlungerMovement : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
+            regularSpeedMotion();
             Launch();
         }
+    }
+
+    void regularSpeedMotion()
+    {
+        Time.timeScale = normalFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    }
+    void slowSpeedMotion()
+    {
+        Time.timeScale = slowdownFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
     void HandleLeaning()
@@ -43,6 +57,7 @@ public class PlungerMovement : MonoBehaviour
     void Launch()
     {
         if (!isCharging) return;
+        slowSpeedMotion();
 
         float chargePercent = Mathf.Abs(leanAngle) / maxPullBack; // How much power is stored
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent); // Scale force

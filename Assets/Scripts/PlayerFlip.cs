@@ -13,12 +13,13 @@ public class PlayerFlip : MonoBehaviour
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // Check if mouse is to the left or right of the player
-        if (mousePosition.x < transform.position.x)
+        // Change direction player is facing depending on key (A/D)
+        if (Input.GetKey(KeyCode.D))
         {
             spriteRenderer.flipX = true; // Face left
         }
-        else
+
+        if (Input.GetKey(KeyCode.A))
         {
             spriteRenderer.flipX = false; // Face right
         }
