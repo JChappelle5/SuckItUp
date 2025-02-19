@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      red_plunger_frame_02_0: -7690178312319197423
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      red_plunger_head_03_0: 1088447462845286593
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
