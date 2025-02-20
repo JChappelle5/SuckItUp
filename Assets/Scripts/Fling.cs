@@ -3,12 +3,19 @@ using UnityEngine;
 public class PlungerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
-    public float rotationSpeed = 50f; // Speed of leaning
-    public float maxPullBack = 45f; // Max lean angle
-    public float minLaunchForce = 5f; // Minimum launch power
-    public float maxLaunchForce = 20f; // Maximum launch power
+    public float rotationSpeed = 50f;
+    public float airRotationSpeed = 100f;
+    public float maxPullBack = 45f;
+    public float minLaunchForce = 5f;
+    public float maxLaunchForce = 20f;
     private float leanAngle = 0f;
-    private bool isCharging = false; // Detect if pulling back
+    private bool isCharging = false;
+    private bool isStickingToWall = false;
+
+    public LayerMask stickableSurfaceLayer;
+    public Transform bottomDetector;
+
+    private bool wasGrounded = false;
 
     void Awake()
     {
@@ -17,7 +24,28 @@ public class PlungerMovement : MonoBehaviour
 
     void Update()
     {
-        HandleLeaning();
+        bool isCurrentlyGrounded = IsGrounded();
+
+        // Debug print when grounded state changes
+        if (isCurrentlyGrounded && !wasGrounded)
+        {
+            Debug.Log("Player is grounded.");
+        }
+        else if (!isCurrentlyGrounded && wasGrounded)
+        {
+            Debug.Log("Player is airborne.");
+        }
+        wasGrounded = isCurrentlyGrounded;
+
+        // Handle movement
+        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space))
+        {
+            HandleLeaning();
+        }
+        else if (!isCurrentlyGrounded && !isStickingToWall)
+        {
+            HandleAirRotation();
+        }
 
         if (Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
@@ -27,16 +55,23 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleLeaning()
     {
-        if (Input.GetKey(KeyCode.Space) && GetComponent<Rigidbody2D>().linearVelocity.y == 0)
+        float input = -Input.GetAxisRaw("Horizontal");
+        if (input != 0)
         {
-            float input = -Input.GetAxisRaw("Horizontal"); // A = Left, D = Right
-            if (input != 0)
-            {
-                isCharging = true;
-                leanAngle += input * rotationSpeed * Time.deltaTime;
-                leanAngle = Mathf.Clamp(leanAngle, -maxPullBack, maxPullBack);
-                rb.MoveRotation(leanAngle);
-            }
+            isCharging = true;
+            leanAngle += input * rotationSpeed * Time.deltaTime;
+            leanAngle = Mathf.Clamp(leanAngle, -maxPullBack, maxPullBack);
+            rb.MoveRotation(leanAngle);
+        }
+    }
+
+    void HandleAirRotation()
+    {
+        float input = -Input.GetAxisRaw("Horizontal");
+        if (input != 0)
+        {
+            float rotation = input * airRotationSpeed * Time.deltaTime;
+            rb.MoveRotation(rb.rotation + rotation);
         }
     }
 
@@ -44,8 +79,8 @@ public class PlungerMovement : MonoBehaviour
     {
         if (!isCharging) return;
 
-        float chargePercent = Mathf.Abs(leanAngle) / maxPullBack; // How much power is stored
-        float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent); // Scale force
+        float chargePercent = Mathf.Abs(leanAngle) / maxPullBack;
+        float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
 
         float angleRad = leanAngle * Mathf.Deg2Rad;
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
@@ -55,7 +90,46 @@ public class PlungerMovement : MonoBehaviour
 
         // Reset
         isCharging = false;
+        isStickingToWall = false;
         leanAngle = 0f;
         rb.MoveRotation(leanAngle);
+
+        //  Reset Gravity and Unfreeze Movement
+        rb.gravityScale = 3;
+        rb.constraints = RigidbodyConstraints2D.None;
+    }
+
+    bool IsGrounded()
+    {
+        float rayLength = 0.6f;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, rayLength, stickableSurfaceLayer);
+        Debug.DrawRay(transform.position, Vector2.down * rayLength, hit.collider != null ? Color.green : Color.red);
+        return hit.collider != null;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
+        {
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                if (contact.point.y <= bottomDetector.position.y)
+                {
+                    StickToWall();
+                    break;
+                }
+            }
+        }
+    }
+
+    private void StickToWall()
+    {
+        Debug.Log("Player is sticking to the wall!");
+        isStickingToWall = true;
+        rb.linearVelocity = Vector2.zero;
+
+        //  Freeze Gravity While Sticking to Wall
+        rb.gravityScale = 0;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
     }
 }
