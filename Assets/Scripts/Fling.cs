@@ -51,21 +51,21 @@ public class PlungerMovement : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
-            regularSpeedMotion();
+            //regularSpeedMotion();
             Launch();
         }
     }
 
-    void regularSpeedMotion()
-    {
-        Time.timeScale = normalFactor;
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
-    }
-    void slowSpeedMotion()
-    {
-        Time.timeScale = slowdownFactor;
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
-    }
+    //void regularSpeedMotion()
+    //{
+    //    Time.timeScale = normalFactor;
+    //    Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    //}
+    //void slowSpeedMotion()
+    //{
+    //    Time.timeScale = slowdownFactor;
+    //    Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    //}
 
     void HandleLeaning()
     {
@@ -92,7 +92,7 @@ public class PlungerMovement : MonoBehaviour
     void Launch()
     {
         if (!isCharging) return;
-        slowSpeedMotion();
+        //slowSpeedMotion();
 
         float chargePercent = Mathf.Abs(leanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);

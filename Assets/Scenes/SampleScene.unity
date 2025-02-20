@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 525964144}
   - component: {fileID: 525964143}
   - component: {fileID: 525964145}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -738,18 +738,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8410753053828019456, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
   m_PrefabInstance: {fileID: 5174926721603753791}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &566081603
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 566081597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d915b2ae600c28c408c9e7375960ef51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &566081610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,9 +751,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 100
+  airRotationSpeed: 5000
   maxPullBack: 45
   minLaunchForce: 5
   maxLaunchForce: 20
+  stickableSurfaceLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  bottomDetector: {fileID: 1785318095}
   normalFactor: 1
   slowdownFactor: 0.75
 --- !u!68 &566081614
@@ -1015,6 +1008,75 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1785318094
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1785318095}
+  - component: {fileID: 1785318096}
+  m_Layer: 0
+  m_Name: BottomDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1785318095
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785318094}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.009, y: -0.603, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5174926721603753792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &1785318096
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785318094}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.008491014, y: 0.11675266}
+  m_Size: {x: 0.5584741, y: 0.30799523}
+  m_Direction: 1
 --- !u!1 &1911421431
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,7 +1172,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4933879198399181710, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4933879198399181710, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_Material
@@ -1211,18 +1273,63 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3474845287980276415, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8410753053828019456, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 566081603}
+      addedObject: {fileID: 1785318095}
+    m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8410753053828019456, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 566081610}
     - targetCorrespondingSourceObject: {fileID: 8410753053828019456, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 566081614}
+    - targetCorrespondingSourceObject: {fileID: 8410753053828019456, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5174926721603753796}
   m_SourcePrefab: {fileID: 100100000, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+--- !u!4 &5174926721603753792 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+  m_PrefabInstance: {fileID: 5174926721603753791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!70 &5174926721603753796
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566081597}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.0000027731426, y: -0.4707886}
+  m_Size: {x: 0.43604997, y: 0.17194442}
+  m_Direction: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
