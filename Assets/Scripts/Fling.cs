@@ -9,13 +9,15 @@ public class PlungerMovement : MonoBehaviour
     public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
     private float leanAngle = 0f;
-    private bool isCharging = false;
-    private bool isStickingToWall = false;
 
+    private bool isCharging = false;    // Detect if pulling back
+    private bool isStickingToWall = false;
     public LayerMask stickableSurfaceLayer;
     public Transform bottomDetector;
-
+    public float normalFactor = 1f;
+    public float slowdownFactor = 0.75f;
     private bool wasGrounded = false;
+
 
     void Awake()
     {
@@ -49,8 +51,20 @@ public class PlungerMovement : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
+            regularSpeedMotion();
             Launch();
         }
+    }
+
+    void regularSpeedMotion()
+    {
+        Time.timeScale = normalFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    }
+    void slowSpeedMotion()
+    {
+        Time.timeScale = slowdownFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
     void HandleLeaning()
@@ -78,6 +92,7 @@ public class PlungerMovement : MonoBehaviour
     void Launch()
     {
         if (!isCharging) return;
+        slowSpeedMotion();
 
         float chargePercent = Mathf.Abs(leanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
