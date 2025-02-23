@@ -6,10 +6,9 @@ public class PlungerMovement : MonoBehaviour
     public float rotationSpeed = 50f;
     public float airRotationSpeed = 100f;
     public float maxPullBack = 45f;
-    public float minLaunchForce = 5f;
+    public float minLaunchForce = 5;
     public float maxLaunchForce = 20f;
     private float leanAngle = 0f;
-
     private bool isCharging = false;
     private bool isStickingToWall = false;
     public LayerMask stickableSurfaceLayer;
@@ -17,8 +16,13 @@ public class PlungerMovement : MonoBehaviour
     public float groundCheckRadius = 0.1f; // For ground check
     public float wallCheckRadius = 0.1f;   // For wall check
     private bool wasGrounded = false;
-
     private float storedLeanAngle = 0f;
+    public float normalFactor = 1f;
+    public float slowdownFactor = 0.7f;
+    public Sprite PlayerStanding; 
+    public Sprite PlayerLeft;
+    public Sprite PlayerRight;
+
 
     void Awake()
     {
@@ -32,10 +36,12 @@ public class PlungerMovement : MonoBehaviour
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
         {
+            regularSpeedMotion();
             Debug.Log("Player is grounded.");
         }
         else if (!isCurrentlyGrounded && wasGrounded)
         {
+            slowSpeedMotion();
             Debug.Log("Player is airborne.");
         }
         wasGrounded = isCurrentlyGrounded;
@@ -65,6 +71,13 @@ public class PlungerMovement : MonoBehaviour
             isCharging = true;
             storedLeanAngle += input * rotationSpeed * Time.deltaTime;
             storedLeanAngle = Mathf.Clamp(storedLeanAngle, -maxPullBack, maxPullBack);
+
+            if(input > 0){ //Facing to the right
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight;
+            }
+            else{ //Facing to the left
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft;
+            }
         }
     }
 
@@ -81,6 +94,8 @@ public class PlungerMovement : MonoBehaviour
     void Launch()
     {
         if (!isCharging) return;
+
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
 
         float chargePercent = Mathf.Abs(storedLeanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
@@ -133,4 +148,20 @@ public class PlungerMovement : MonoBehaviour
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
     }
+    
+    //Resets time to regular
+    private void regularSpeedMotion()
+    {
+        Time.timeScale = normalFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    }
+
+    //Slows down time
+    private void slowSpeedMotion()
+    {
+        Time.timeScale = slowdownFactor;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+    }
 }
+
+    
