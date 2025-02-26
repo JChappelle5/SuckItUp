@@ -104,7 +104,7 @@ public class PlungerMovement : MonoBehaviour
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
 
         rb.linearVelocity = Vector2.zero; // Reset velocity
-        rb.gravityScale = 3; // Reset gravity
+        rb.gravityScale = 10; // Reset gravity
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
 
         rb.AddForce(launchDirection * launchForce, ForceMode2D.Impulse);

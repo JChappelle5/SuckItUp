@@ -836,8 +836,8 @@ MonoBehaviour:
   rotationSpeed: 100
   airRotationSpeed: 6000
   maxPullBack: 45
-  minLaunchForce: 10
-  maxLaunchForce: 25
+  minLaunchForce: 20
+  maxLaunchForce: 45
   stickableSurfaceLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -2936,6 +2936,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 0}
@@ -2949,7 +2953,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_GravityScale
-      value: 3
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LinearDamping
@@ -2962,6 +2966,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3474845287980276415, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
     - {fileID: 6897631154545589119, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+    - {fileID: 4933879198399181710, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
