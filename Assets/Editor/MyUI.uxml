@@ -1,0 +1,4 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Editor/MyUI.uss?fileID=7433441132597879392&amp;guid=e6b2f4f9c068e2743acb8a0ae30c26cc&amp;type=3#MyUI" />
+    <engine:Button text="Play Narration" name="testButton" />
+</engine:UXML>
