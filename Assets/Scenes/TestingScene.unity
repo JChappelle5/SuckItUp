@@ -1007,8 +1007,12 @@ MonoBehaviour:
   normalFactor: 1
   slowdownFactor: 0.7
   PlayerStanding: {fileID: -4294733378064968425, guid: 4565ad94439b8544484702c620092c84, type: 3}
-  PlayerLeft: {fileID: -4018307493478988608, guid: 204da09daf2f3094ca5d12f4da8817d1, type: 3}
-  PlayerRight: {fileID: -1924765436334174199, guid: 3d92b208f16d9484f8ea9b66277403d6, type: 3}
+  PlayerLeft1: {fileID: -4018307493478988608, guid: 204da09daf2f3094ca5d12f4da8817d1, type: 3}
+  PlayerLeft2: {fileID: -7663185950524969196, guid: 19236cf3e288d7c478a95db84db6fc56, type: 3}
+  PlayerLeft3: {fileID: 3500303540297668169, guid: 9d16cdbb72dec7046a94b54032b2ee58, type: 3}
+  PlayerRight1: {fileID: -1924765436334174199, guid: 3d92b208f16d9484f8ea9b66277403d6, type: 3}
+  PlayerRight2: {fileID: 5030297396088769931, guid: 0a381a1ab9d23a048aabe227beb36cc0, type: 3}
+  PlayerRight3: {fileID: -5348201463422556789, guid: 1d7c8ad53eee6624c87404ba93c91a69, type: 3}
 --- !u!68 &566081614
 EdgeCollider2D:
   m_ObjectHideFlags: 0

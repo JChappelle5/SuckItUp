@@ -20,8 +20,12 @@ public class PlungerMovement : MonoBehaviour
     public float normalFactor = 1f;
     public float slowdownFactor = 0.7f;
     public Sprite PlayerStanding; 
-    public Sprite PlayerLeft;
-    public Sprite PlayerRight;
+    public Sprite PlayerLeft1;
+    public Sprite PlayerLeft2;
+    public Sprite PlayerLeft3;
+    public Sprite PlayerRight1;
+    public Sprite PlayerRight2;
+    public Sprite PlayerRight3;
 
 
     void Awake()
@@ -72,11 +76,32 @@ public class PlungerMovement : MonoBehaviour
             storedLeanAngle += input * rotationSpeed * Time.deltaTime;
             storedLeanAngle = Mathf.Clamp(storedLeanAngle, -maxPullBack, maxPullBack);
 
-            if(input > 0){ //Facing to the right
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight;
+            float lowCharge = maxPullBack * 0.33f;
+            float medCharge = maxPullBack * 0.66f;
+
+            if (storedLeanAngle > medCharge)
+            { //Max right charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight3;
             }
-            else{ //Facing to the left
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft;
+            else if (storedLeanAngle > lowCharge)
+            { //Medium right charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight2;
+            }
+            else if (storedLeanAngle > 0)
+            { //Low right charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight1;
+            }
+            else if (storedLeanAngle < -medCharge)
+            { //Max left charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft3;
+            }
+            else if (storedLeanAngle < -lowCharge)
+            { //Medium left charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft2;
+            }
+            else if (storedLeanAngle < 0)
+            { //Low left charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft1;
             }
         }
     }
