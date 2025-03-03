@@ -56,7 +56,12 @@ public class PlungerMovement : MonoBehaviour
             HandleAirRotation();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space)) // Release to launch
+        if(isStickingToWall && Input.GetKey(KeyCode.Space))
+        {
+            StickToWall();
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
             Launch();
         }
@@ -100,14 +105,45 @@ public class PlungerMovement : MonoBehaviour
         float chargePercent = Mathf.Abs(storedLeanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
 
+        float input = -Input.GetAxisRaw("Horizontal");
+
         float angleRad = storedLeanAngle * Mathf.Deg2Rad;
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
+        Vector2 upWallLaunchDir, downWallLaunchDir;
 
         rb.linearVelocity = Vector2.zero; // Reset velocity
         rb.gravityScale = 10; // Reset gravity
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
+        
+        if(isStickingToWall)
+        {
+            float rotation = Mathf.Abs(rb.rotation % 360);
 
-        rb.AddForce(launchDirection * launchForce, ForceMode2D.Impulse);
+            if(rotation > 255 && rotation < 285) // on right wall
+            {
+                upWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
+                downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
+
+                if(input < 0) // facing upwards
+                    rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
+                else if(input > 0)
+                    rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
+            }
+            else if(rotation > 75 && rotation < 105) // on left wall
+            {
+                upWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
+                downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
+
+                if(input < 0) // facing upwards
+                    rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
+                else if(input > 0)
+                    rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
+            }
+            
+            Debug.Log($"Rotation: {rotation}, StoredLeanAngle: {storedLeanAngle}, Input: {input}");
+        }
+        else
+            rb.AddForce(launchDirection * launchForce, ForceMode2D.Impulse);
 
         // Reset
         isCharging = false;
@@ -123,6 +159,12 @@ public class PlungerMovement : MonoBehaviour
         return hit != null;
     }
 
+    bool isRotatedOnWall()
+    {
+        float rotation = Mathf.Abs(rb.rotation % 360);
+        return (Mathf.Abs(rotation - 90) <= 15 || Mathf.Abs(rotation - 270) <= 15);
+    }
+
     //  Wall Detection Using OnCollisionEnter2D
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -130,7 +172,7 @@ public class PlungerMovement : MonoBehaviour
         {
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer))
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
                 {
                     StickToWall();
                     break;
@@ -163,5 +205,3 @@ public class PlungerMovement : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 }
-
-    
