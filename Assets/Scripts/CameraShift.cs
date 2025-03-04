@@ -39,15 +39,19 @@ public class CameraShift : MonoBehaviour
     public Transform player;
     private float screenTop, screenBottom, screenLeft, screenRight;
     private float cameraHeight, cameraWidth;
+    private float aspectRatio;
 
     void Start()
     {
+        aspectRatio = (float)Screen.width / Screen.height;
         cameraHeight = Camera.main.orthographicSize * 2f - 1; // Total camera height
-        cameraWidth = cameraHeight * Camera.main.aspect; // Total camera width
+        cameraWidth = Camera.main.orthographicSize * 2f * aspectRatio; // Total camera width
     }
 
     void Update()
     {
+        float buffer = 0.5f;
+
         screenTop = Camera.main.transform.position.y + Camera.main.orthographicSize;
         screenBottom = Camera.main.transform.position.y - Camera.main.orthographicSize;
         screenRight = Camera.main.transform.position.x + cameraWidth / 2;
@@ -66,15 +70,15 @@ public class CameraShift : MonoBehaviour
         }
 
         // Move camera right
-        if (player.position.x > screenRight)
+        if (player.position.x > screenRight - buffer)
         {
-            Camera.main.transform.position += new Vector3(cameraWidth, 0, 0);
+            Camera.main.transform.position += new Vector3(cameraWidth - 2.25f, 0, 0);
         }
 
         // Move camera left
-        if (player.position.x < screenLeft)
+        if (player.position.x < screenLeft + buffer)
         {
-            Camera.main.transform.position -= new Vector3(cameraWidth, 0, 0);
+            Camera.main.transform.position -= new Vector3(cameraWidth - 2.25f, 0, 0);
         }
     }
 }
