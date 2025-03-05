@@ -19,6 +19,7 @@ public class PlungerMovement : MonoBehaviour
     private float storedLeanAngle = 0f;
     public float normalFactor = 1f;
     public float slowdownFactor = 0.7f;
+    public bool canStick = false;
     public Sprite PlayerStanding; 
     public Sprite PlayerLeft1;
     public Sprite PlayerLeft2;
@@ -26,16 +27,20 @@ public class PlungerMovement : MonoBehaviour
     public Sprite PlayerRight1;
     public Sprite PlayerRight2;
     public Sprite PlayerRight3;
+    public bool TimerOn = false;
+    public float stickTime;
+    public bool isCurrentlyGrounded;
 
 
-        void Awake()
+    void Awake()
     {
+        stickTime = 3f;
         rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        bool isCurrentlyGrounded = IsGrounded();
+        isCurrentlyGrounded = IsGrounded();
 
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
@@ -60,22 +65,34 @@ public class PlungerMovement : MonoBehaviour
             HandleAirRotation();
         }
 
-        if(isStickingToWall && Input.GetKey(KeyCode.Space))
+        if(Input.GetKey(KeyCode.Space))
         {
-            StickToWall();
+            canStick = true;
+        }
+        else{
+            canStick = false;
         }
 
         if(Input.GetKeyUp(KeyCode.Space)) // Release to launch
         {
             Launch();
         }
+
+        if (TimerOn && isStickingToWall)
+        {
+            if (stickTime > 0)
+            {
+                stickTime -= Time.deltaTime;
+            }
+            else
+            {
+                unstickPlayer();
+                TimerOn = false;
+                stickTime = 3f;
+            }
+        }
     }
 
-
- 
-
-
-    // Charge without visually rotating the player
     void HandleCharging()
     {
         float input = -Input.GetAxisRaw("Horizontal");
@@ -146,9 +163,9 @@ public class PlungerMovement : MonoBehaviour
         
         if(isStickingToWall)
         {
-            float rotation = Mathf.Abs(rb.rotation % 360);
+            float rotation = rb.rotation % 360;
 
-            if(rotation > 255 && rotation < 285) // on right wall
+            if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
             {
                 upWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
@@ -158,7 +175,7 @@ public class PlungerMovement : MonoBehaviour
                 else if(input > 0)
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
             }
-            else if(rotation > 75 && rotation < 105) // on left wall
+            else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
             {
                 upWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
@@ -168,8 +185,6 @@ public class PlungerMovement : MonoBehaviour
                 else if(input > 0)
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
             }
-            
-            Debug.Log($"Rotation: {rotation}, StoredLeanAngle: {storedLeanAngle}, Input: {input}");
         }
         else
             rb.AddForce(launchDirection * launchForce, ForceMode2D.Impulse);
@@ -201,7 +216,7 @@ public class PlungerMovement : MonoBehaviour
         {
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && canStick == true)
                 {
                     StickToWall();
                     break;
@@ -212,16 +227,15 @@ public class PlungerMovement : MonoBehaviour
 
     private void StickToWall()
     {
-        Debug.Log("Player is sticking to the wall!");
+        
         isStickingToWall = true;
         rb.linearVelocity = Vector2.zero;
 
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        TimerOn = true;
     }
-
-
-
+    
     //Resets time to regular
     private void regularSpeedMotion()
     {
@@ -235,4 +249,10 @@ public class PlungerMovement : MonoBehaviour
         Time.timeScale = slowdownFactor;
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
+
+    private void unstickPlayer()
+    {
+        rb.gravityScale = 10;
+        rb.constraints = RigidbodyConstraints2D.None;
+    }  
 }
