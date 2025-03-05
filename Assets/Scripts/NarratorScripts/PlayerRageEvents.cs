@@ -36,11 +36,7 @@ public class PlayerRageEvents : MonoBehaviour
 
     void Update()
     {
-        if (heightTracker == null)
-        {
-            Debug.LogError("HeightTracker reference is missing in PlayerRageEvents!");
-            return;
-        }
+        if (heightTracker == null) return;
 
         int currentHeight = Mathf.FloorToInt(heightTracker.playerRb.position.y / 5.45f) + 1;
         float verticalVelocity = heightTracker.playerRb.linearVelocity.y;
@@ -51,7 +47,6 @@ public class PlayerRageEvents : MonoBehaviour
             isFalling = true;
             hasLanded = false;
             highestPointBeforeFall = currentHeight;
-            Debug.Log("Fall started! Recorded highest point: " + highestPointBeforeFall);
         }
 
         // Detect when the player lands
@@ -60,7 +55,6 @@ public class PlayerRageEvents : MonoBehaviour
             isFalling = false;
             hasLanded = true;
             int fallDistance = highestPointBeforeFall - currentHeight;
-            Debug.Log($"Player landed. Fall distance: {fallDistance} meters.");
 
             if (fallDistance >= bigFallThreshold)
             {
@@ -70,45 +64,34 @@ public class PlayerRageEvents : MonoBehaviour
                 {
                     if (!narratorManager.isPlayingAudio)
                     {
-                        Debug.Log("Big fall detected! Playing one big fall clip.");
                         narratorManager.PlayRandomClip(narratorManager.allFalls);
-                    }
-                    else
-                    {
-                        Debug.Log("Big fall detected but waiting for previous audio to finish.");
                     }
                     narrationCooldown = Time.time + narrationCooldownDuration;
                 }
             }
 
-            // **Ignore small falls for repeated fall detection**
-            if (fallDistance < minFallDistanceForRepeat)
-            {
-                Debug.Log("Fall ignored for repeated fall tracking (too short).");
-                return;
-            }
+            // Ignore small falls for repeated fall detection
+            if (fallDistance < minFallDistanceForRepeat) return;
 
-            // **Check if this is a repeated fall**
+            // Check if this is a repeated fall
             if (currentHeight == lastFallHeight)
             {
-                consecutiveFallCount++; // Increase counter if falling from the same height
+                consecutiveFallCount++;
 
                 if (consecutiveFallCount >= repeatFallThreshold)
                 {
-                    Debug.Log($"Repeated fall detected from {currentHeight}m ({consecutiveFallCount} times)! Playing repeated fall clip.");
-
                     if (!narratorManager.isPlayingAudio && narratorManager.repeatedFallClips.Length > 0)
                     {
                         narratorManager.PlayRandomClip(narratorManager.repeatedFallClips);
                     }
 
-                    // **Reset counter to avoid immediate spam**
+                    // Reset counter to avoid immediate spam
                     consecutiveFallCount = 0;
                 }
             }
             else
             {
-                // **Reset counter if the player falls from a different height**
+                // Reset counter if the player falls from a different height
                 lastFallHeight = currentHeight;
                 consecutiveFallCount = 1;
             }
@@ -118,7 +101,6 @@ public class PlayerRageEvents : MonoBehaviour
         if (hasFallenOnce && currentHeight >= lastHeightCheckpoint + heightCheckpointInterval)
         {
             lastHeightCheckpoint = currentHeight;
-            Debug.Log($"New height milestone reached: {lastHeightCheckpoint} meters! Playing new height clip.");
 
             if (!narratorManager.isPlayingAudio && narratorManager.newHeightClips.Length > 0)
             {

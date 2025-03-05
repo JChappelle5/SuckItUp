@@ -13322,11 +13322,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.7
+      value: -17.1
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.7
+      value: -3.9
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -13557,7 +13557,7 @@ MonoBehaviour:
   narratorManager: {fileID: 543107573}
   heightTracker: {fileID: 581907708}
   bigFallThreshold: 5
-  heightCheckpointInterval: 5
+  heightCheckpointInterval: 4
   repeatFallThreshold: 2
   minFallDistanceForRepeat: 1
 --- !u!50 &5174926721603753804 stripped
