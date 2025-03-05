@@ -65,17 +65,16 @@ public class PlungerMovement : MonoBehaviour
             HandleAirRotation();
         }
 
-        if(Input.GetKey(KeyCode.Space))
-        {
-            canStick = true;
-        }
-        else{
-            canStick = false;
-        }
+        canStick = Input.GetKey(KeyCode.Space);
 
-        if(Input.GetKeyUp(KeyCode.Space)) // Release to launch
+        if(Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity == Vector2.zero) // Release to launch
         {
             Launch();
+        }
+
+        if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
+        {
+            StickToWall(); // Stick if pressing Space while on the wall
         }
 
         if (TimerOn && isStickingToWall)
@@ -95,6 +94,7 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleCharging()
     {
+        rb.linearVelocity = Vector2.zero;
         float input = -Input.GetAxisRaw("Horizontal");
         if (input != 0)
         {
@@ -216,7 +216,7 @@ public class PlungerMovement : MonoBehaviour
         {
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && canStick == true)
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && Input.GetKey(KeyCode.Space))
                 {
                     StickToWall();
                     break;
@@ -225,15 +225,31 @@ public class PlungerMovement : MonoBehaviour
         }
     }
 
+    // Restick player if pressing Space while already on the wall (Same as OnEnter but for continuous checks)
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
+        {
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && Input.GetKey(KeyCode.Space))
+                {
+                    StickToWall(); 
+                    break;
+                }
+            }
+        }
+    }
+
     private void StickToWall()
     {
-        
         isStickingToWall = true;
         rb.linearVelocity = Vector2.zero;
 
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
         TimerOn = true;
+        stickTime = 3f;
     }
     
     //Resets time to regular
