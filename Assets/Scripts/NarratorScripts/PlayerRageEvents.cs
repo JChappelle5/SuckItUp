@@ -1,116 +1,135 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerRageEvents : MonoBehaviour
 {
     [Header("References")]
-    public NarratorManager narratorManager; // Assign your NarratorManager GameObject here
+    public NarratorManager narratorManager;
+    public HeightTracker heightTracker;
 
-    [Header("Fall Thresholds")]
-    public float mildFallThreshold = 0.3f;
-    public float majorFallThreshold = 1.0f;
+    [Header("Fall & Height Thresholds")]
+    public float bigFallThreshold = 6f;
+    public float heightCheckpointInterval = 10f;
+    public int repeatFallThreshold = 3; // Only play audio after 3 repeated falls in a row
+    public float minFallDistanceForRepeat = 3f; // Minimum fall distance to count as "frustrating"
 
-    [Header("Repeated Falls Settings")]
-    public float repeatedFallWindow = 10f;
-    public int repeatedFallCountThreshold = 3;
-
-    [Header("Climbing Settings")]
-    public float climbingCheckInterval = 2f;
-    [Range(0f, 1f)]
-    public float climbingChance = 0.2f;
-
-    private Rigidbody2D rb;
-
-    private float previousHeight;
-    private float maxHeightReached;
-    private float potentialMaxHeight = 0f;
-
-    private float lastFallTime;
-    private int fallsInWindow;
-
-    private float climbingTimer;
-    private bool hasFallenAtLeastOnce = false;
-
+    [Header("Cooldowns")]
     private float narrationCooldown = 0f;
-    private float narrationCooldownDuration = 1.5f;
+    private float narrationCooldownDuration = 3f;
 
-    public float bufferHeightMargin = 0.5f;
     private bool isFalling = false;
-    private float highestPointBeforeFall;
+    private bool hasLanded = true;
+    private bool hasFallenOnce = false;
+    private int highestPointBeforeFall;
+    private int lastHeightCheckpoint;
+    private float velocityThreshold = 0.1f;
 
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    // Tracking repeated falls
+    private int lastFallHeight = -9999; // Track the last height the player fell from
+    private int consecutiveFallCount = 0; // Count consecutive falls from the same height
 
     void Start()
     {
-        previousHeight = transform.position.y;
-        maxHeightReached = previousHeight;
-        lastFallTime = -repeatedFallWindow;
-        fallsInWindow = 0;
-        climbingTimer = climbingCheckInterval;
+        lastHeightCheckpoint = Mathf.FloorToInt(heightTracker.playerRb.position.y / 5.45f) + 1;
     }
-
-    public float heightMargin = 1f;
-    public float newHeightCooldownDuration = 2f;
-    private float newHeightCooldownTimer = 0f;
 
     void Update()
     {
-        float currentHeight = transform.position.y;
+        if (heightTracker == null)
+        {
+            Debug.LogError("HeightTracker reference is missing in PlayerRageEvents!");
+            return;
+        }
 
-        if (rb.linearVelocity.y < 0 && !isFalling)
+        int currentHeight = Mathf.FloorToInt(heightTracker.playerRb.position.y / 5.45f) + 1;
+        float verticalVelocity = heightTracker.playerRb.linearVelocity.y;
+
+        // Detect when the player starts falling
+        if (!isFalling && hasLanded && currentHeight < highestPointBeforeFall && verticalVelocity < -velocityThreshold)
         {
             isFalling = true;
+            hasLanded = false;
             highestPointBeforeFall = currentHeight;
+            Debug.Log("Fall started! Recorded highest point: " + highestPointBeforeFall);
         }
 
-        if (newHeightCooldownTimer > 0f)
-            newHeightCooldownTimer -= Time.deltaTime;
-
-        if (currentHeight > maxHeightReached + bufferHeightMargin)
-        {
-            potentialMaxHeight = currentHeight;
-        }
-
-        previousHeight = currentHeight;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (rb.linearVelocity.y == 0 && isFalling)
+        // Detect when the player lands
+        if (isFalling && !hasLanded && Mathf.Abs(verticalVelocity) < velocityThreshold)
         {
             isFalling = false;
-            float landingHeight = transform.position.y;
-            float fallDistance = highestPointBeforeFall - landingHeight;
+            hasLanded = true;
+            int fallDistance = highestPointBeforeFall - currentHeight;
+            Debug.Log($"Player landed. Fall distance: {fallDistance} meters.");
 
-            if (landingHeight > maxHeightReached)
+            if (fallDistance >= bigFallThreshold)
             {
-                maxHeightReached = landingHeight;
-                narratorManager.PlayRandomClip(narratorManager.newHeightClips);
-                newHeightCooldownTimer = newHeightCooldownDuration;
-                narrationCooldown = Time.time + narrationCooldownDuration;
+                hasFallenOnce = true;
+
+                if (Time.time >= narrationCooldown)
+                {
+                    if (!narratorManager.isPlayingAudio)
+                    {
+                        Debug.Log("Big fall detected! Playing one big fall clip.");
+                        narratorManager.PlayRandomClip(narratorManager.allFalls);
+                    }
+                    else
+                    {
+                        Debug.Log("Big fall detected but waiting for previous audio to finish.");
+                    }
+                    narrationCooldown = Time.time + narrationCooldownDuration;
+                }
             }
 
-            if (Time.time < narrationCooldown)
+            // **Ignore small falls for repeated fall detection**
+            if (fallDistance < minFallDistanceForRepeat)
+            {
+                Debug.Log("Fall ignored for repeated fall tracking (too short).");
                 return;
-
-            if (fallDistance >= mildFallThreshold)
-            {
-                hasFallenAtLeastOnce = true;
-
-                if (fallDistance >= majorFallThreshold)
-                {
-                    narratorManager.PlayRandomClip(narratorManager.majorFallClips);
-                }
-                else
-                {
-                    narratorManager.PlayRandomClip(narratorManager.mildFallClips);
-                }
-
-                narrationCooldown = Time.time + narrationCooldownDuration;
             }
+
+            // **Check if this is a repeated fall**
+            if (currentHeight == lastFallHeight)
+            {
+                consecutiveFallCount++; // Increase counter if falling from the same height
+
+                if (consecutiveFallCount >= repeatFallThreshold)
+                {
+                    Debug.Log($"Repeated fall detected from {currentHeight}m ({consecutiveFallCount} times)! Playing repeated fall clip.");
+
+                    if (!narratorManager.isPlayingAudio && narratorManager.repeatedFallClips.Length > 0)
+                    {
+                        narratorManager.PlayRandomClip(narratorManager.repeatedFallClips);
+                    }
+
+                    // **Reset counter to avoid immediate spam**
+                    consecutiveFallCount = 0;
+                }
+            }
+            else
+            {
+                // **Reset counter if the player falls from a different height**
+                lastFallHeight = currentHeight;
+                consecutiveFallCount = 1;
+            }
+        }
+
+        // Detect when the player surpasses the last height checkpoint by 10 meters
+        if (hasFallenOnce && currentHeight >= lastHeightCheckpoint + heightCheckpointInterval)
+        {
+            lastHeightCheckpoint = currentHeight;
+            Debug.Log($"New height milestone reached: {lastHeightCheckpoint} meters! Playing new height clip.");
+
+            if (!narratorManager.isPlayingAudio && narratorManager.newHeightClips.Length > 0)
+            {
+                narratorManager.PlayRandomClip(narratorManager.newHeightClips);
+            }
+        }
+
+        // Update highest point if player reaches a new max height
+        if (currentHeight > highestPointBeforeFall)
+        {
+            highestPointBeforeFall = currentHeight;
         }
     }
 }

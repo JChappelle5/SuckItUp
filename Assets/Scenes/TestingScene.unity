@@ -2544,26 +2544,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 543107574}
-  mildFallClips:
+  allFalls:
   - {fileID: 8300000, guid: 35a958d6283ef6e4eb8032db25cecec7, type: 3}
   - {fileID: 8300000, guid: 4ca257ca589db6844998111be9406279, type: 3}
   - {fileID: 8300000, guid: c22760e0ba9611f4c8f18c15236ecd7f, type: 3}
-  majorFallClips:
   - {fileID: 8300000, guid: f8a76f3f811a75a4693eeb7c80052250, type: 3}
   - {fileID: 8300000, guid: db67668f816b18c47890f4591d76c4a4, type: 3}
   - {fileID: 8300000, guid: ebe6efb4263d95f4090748abbc611e72, type: 3}
-  repeatedFallClips:
-  - {fileID: 8300000, guid: 63275b70469b62e4c9503f8e8c0508ad, type: 3}
-  - {fileID: 8300000, guid: 4c68eb9f6c420f342ac576dfb1bb98d4, type: 3}
-  - {fileID: 8300000, guid: 605d376e5f21fb84fae04a1c066373ae, type: 3}
-  climbingClips:
-  - {fileID: 8300000, guid: 76a4ef6e1f107f042991822170c7fc6a, type: 3}
-  - {fileID: 8300000, guid: 51528eb0f44e00e4d9804637567817eb, type: 3}
-  - {fileID: 8300000, guid: 0cb85796170c377499d906a830083077, type: 3}
   newHeightClips:
   - {fileID: 8300000, guid: 97b9c13dcb64c98478914969479b0db1, type: 3}
   - {fileID: 8300000, guid: a20c4e026b8f2644883ae51b6848e3ba, type: 3}
   - {fileID: 8300000, guid: c2f95e78fa8cba94c934448c71c09b35, type: 3}
+  repeatedFallClips:
+  - {fileID: 8300000, guid: 605d376e5f21fb84fae04a1c066373ae, type: 3}
+  - {fileID: 8300000, guid: 4c68eb9f6c420f342ac576dfb1bb98d4, type: 3}
+  - {fileID: 8300000, guid: 63275b70469b62e4c9503f8e8c0508ad, type: 3}
+  isPlayingAudio: 0
 --- !u!82 &543107574
 AudioSource:
   m_ObjectHideFlags: 0
@@ -13151,7 +13147,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.010318274, y: 0.012327103}
   m_AnchorMax: {x: 0.010318274, y: 0.012327103}
-  m_AnchoredPosition: {x: 8.4, y: 395.9}
+  m_AnchoredPosition: {x: 8.400024, y: 395.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2121990468
@@ -13326,11 +13322,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.93
+      value: -16.7
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.31
+      value: -3.7
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -13559,15 +13555,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   narratorManager: {fileID: 543107573}
-  mildFallThreshold: 0.5
-  majorFallThreshold: 1
-  repeatedFallWindow: 10
-  repeatedFallCountThreshold: 3
-  climbingCheckInterval: 2
-  climbingChance: 0.2
-  bufferHeightMargin: 0.5
-  heightMargin: 1
-  newHeightCooldownDuration: 2
+  heightTracker: {fileID: 581907708}
+  bigFallThreshold: 5
+  heightCheckpointInterval: 5
+  repeatFallThreshold: 2
+  minFallDistanceForRepeat: 1
 --- !u!50 &5174926721603753804 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
