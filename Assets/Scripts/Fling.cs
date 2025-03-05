@@ -28,7 +28,7 @@ public class PlungerMovement : MonoBehaviour
     public Sprite PlayerRight3;
 
 
-    void Awake()
+        void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
@@ -70,6 +70,10 @@ public class PlungerMovement : MonoBehaviour
             Launch();
         }
     }
+
+
+ 
+
 
     // Charge without visually rotating the player
     void HandleCharging()
@@ -215,7 +219,9 @@ public class PlungerMovement : MonoBehaviour
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
     }
-    
+
+
+
     //Resets time to regular
     private void regularSpeedMotion()
     {
