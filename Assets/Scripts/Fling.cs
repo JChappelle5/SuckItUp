@@ -6,7 +6,7 @@ public class PlungerMovement : MonoBehaviour
     public float rotationSpeed = 50f;
     public float airRotationSpeed = 100f;
     public float maxPullBack = 45f;
-    public float minLaunchForce = 5;
+    public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
     private float leanAngle = 0f;
     private bool isCharging = false;
@@ -30,6 +30,8 @@ public class PlungerMovement : MonoBehaviour
     public bool TimerOn = false;
     public float stickTime;
     public bool isCurrentlyGrounded;
+    private float stickCooldown = 0f;
+    private float stickCooldownTime = 3f;
 
 
     void Awake()
@@ -41,6 +43,11 @@ public class PlungerMovement : MonoBehaviour
     void Update()
     {
         isCurrentlyGrounded = IsGrounded();
+
+        if(stickCooldown > 0f)
+        {
+            stickCooldown -= Time.deltaTime;
+        }
 
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
@@ -54,6 +61,16 @@ public class PlungerMovement : MonoBehaviour
             Debug.Log("Player is airborne.");
         }
         wasGrounded = isCurrentlyGrounded;
+
+        if(isCurrentlyGrounded && !isStickingToWall)
+        {
+            stickCooldown = 0f;
+        }
+
+        if(!isCharging && !isStickingToWall)
+        {
+            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+        }
 
         // Handle movement
         if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space))
@@ -228,6 +245,8 @@ public class PlungerMovement : MonoBehaviour
     // Restick player if pressing Space while already on the wall (Same as OnEnter but for continuous checks)
     private void OnCollisionStay2D(Collision2D collision)
     {
+        if(stickCooldown > 0f) return;
+
         if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
             foreach (ContactPoint2D contact in collision.contacts)
@@ -243,6 +262,8 @@ public class PlungerMovement : MonoBehaviour
 
     private void StickToWall()
     {
+        if(stickCooldown > 0f) return; // Prevents resticking immediately after stick timer
+
         isStickingToWall = true;
         rb.linearVelocity = Vector2.zero;
 
@@ -268,7 +289,25 @@ public class PlungerMovement : MonoBehaviour
 
     private void unstickPlayer()
     {
+        isStickingToWall = false;
+        isCharging = false; // Resets sprite
+        storedLeanAngle = 0f; // Resets stored angle
         rb.gravityScale = 10;
         rb.constraints = RigidbodyConstraints2D.None;
+        stickCooldown = stickCooldownTime; // Initiates cooldown
+
+        Vector2 pushDir = Vector2.zero;
+        float rotation = rb.rotation % 360;
+
+        if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
+        {
+            pushDir = new Vector2(-2f, -0.1f).normalized;
+        }
+        else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
+        {
+            pushDir = new Vector2(2f, -0.1f).normalized;
+        }
+
+        rb.AddForce(pushDir * 2f, ForceMode2D.Impulse);
     }  
 }
