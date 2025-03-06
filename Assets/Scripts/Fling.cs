@@ -32,8 +32,6 @@ public class PlungerMovement : MonoBehaviour
     public bool TimerOn = false;
     public float stickTime;
     public bool isCurrentlyGrounded;
-    private float stickCooldown = 0f;
-    private float stickCooldownTime = 3f;
 
 
     void Awake()
@@ -60,14 +58,15 @@ public class PlungerMovement : MonoBehaviour
         }
         wasGrounded = isCurrentlyGrounded;
 
-        if(isCurrentlyGrounded && !isStickingToWall)
-        {
-            stickCooldown = 0f;
-        }
-
         if(!isCharging && !isStickingToWall)
         {
             this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+        }
+
+        if(isCurrentlyGrounded && !isRotatedOnWall())
+        {
+            TimerOn = false;
+            stickTime = 3f;
         }
 
         // Handle movement
@@ -244,8 +243,6 @@ public class PlungerMovement : MonoBehaviour
     // Restick player if pressing Space while already on the wall (Same as OnEnter but for continuous checks)
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if(stickCooldown > 0f) return;
-
         if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
             foreach (ContactPoint2D contact in collision.contacts)
@@ -261,8 +258,6 @@ public class PlungerMovement : MonoBehaviour
 
     private void StickToWall()
     {
-        if(stickCooldown > 0f) return; // Prevents resticking immediately after stick timer
-
         isStickingToWall = true;
         rb.linearVelocity = Vector2.zero;
 
@@ -295,7 +290,6 @@ public class PlungerMovement : MonoBehaviour
         storedLeanAngle = 0f; // Resets stored angle
         rb.gravityScale = 10;
         rb.constraints = RigidbodyConstraints2D.None;
-        stickCooldown = stickCooldownTime; // Initiates cooldown
 
         Vector2 pushDir = Vector2.zero;
         float rotation = rb.rotation % 360;
@@ -317,7 +311,7 @@ public class PlungerMovement : MonoBehaviour
 
     private IEnumerator TemporarilyDisableStickable()
     {
-        GameObject tilemap = GameObject.Find("Tilemap"); // Adjust this to your actual Tilemap's name
+        GameObject tilemap = GameObject.Find("Tilemap"); // Gets tilemap object
 
         if (tilemap != null)
         {

@@ -72,13 +72,13 @@ public class CameraShift : MonoBehaviour
         // Move camera right
         if (player.position.x > screenRight - buffer)
         {
-            Camera.main.transform.position += new Vector3(cameraWidth - 2.25f, 0, 0);
+            Camera.main.transform.position += new Vector3(cameraWidth - 3f, 0, 0);
         }
 
         // Move camera left
         if (player.position.x < screenLeft + buffer)
         {
-            Camera.main.transform.position -= new Vector3(cameraWidth - 2.25f, 0, 0);
+            Camera.main.transform.position -= new Vector3(cameraWidth - 3f, 0, 0);
         }
     }
 }
