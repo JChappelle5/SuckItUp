@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+
 
 public class PlungerMovement : MonoBehaviour
 {
@@ -44,10 +46,6 @@ public class PlungerMovement : MonoBehaviour
     {
         isCurrentlyGrounded = IsGrounded();
 
-        if(stickCooldown > 0f)
-        {
-            stickCooldown -= Time.deltaTime;
-        }
 
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
@@ -111,6 +109,7 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleCharging()
     {
+
         rb.linearVelocity = Vector2.zero;
         float input = -Input.GetAxisRaw("Horizontal");
         if (input != 0)
@@ -287,6 +286,8 @@ public class PlungerMovement : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
+
+
     private void unstickPlayer()
     {
         isStickingToWall = false;
@@ -299,15 +300,35 @@ public class PlungerMovement : MonoBehaviour
         Vector2 pushDir = Vector2.zero;
         float rotation = rb.rotation % 360;
 
-        if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
+        if ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
         {
             pushDir = new Vector2(-2f, -0.1f).normalized;
         }
-        else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
+        else if ((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
         {
             pushDir = new Vector2(2f, -0.1f).normalized;
         }
 
         rb.AddForce(pushDir * 2f, ForceMode2D.Impulse);
-    }  
+
+        // Start Coroutine to temporarily disable sticking
+        StartCoroutine(TemporarilyDisableStickable());
+    }
+
+    private IEnumerator TemporarilyDisableStickable()
+    {
+        GameObject tilemap = GameObject.Find("Tilemap"); // Adjust this to your actual Tilemap's name
+
+        if (tilemap != null)
+        {
+            tilemap.layer = LayerMask.NameToLayer("Default"); // Change to non-stickable
+            yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds
+            tilemap.layer = LayerMask.NameToLayer("StickableSurface"); // Change back to stickable
+        }
+        else
+        {
+            Debug.LogWarning("Tilemap not found! Make sure it's named correctly in the hierarchy.");
+        }
+    }
+
 }
