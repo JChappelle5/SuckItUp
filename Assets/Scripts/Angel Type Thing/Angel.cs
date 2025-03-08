@@ -16,6 +16,11 @@ public class Angel : MonoBehaviour
     {
         bool isCurrentlyGrounded = IsGrounded();
 
+        if(timeAirborne >= 1f)
+        {
+            
+        }
+
         if (isCurrentlyGrounded && !wasGrounded && IsUpright()) // Updates last position once the player is grounded and upright
         {
             lastPos = playerRb.position;
@@ -26,6 +31,11 @@ public class Angel : MonoBehaviour
             timeAirborne += Time.deltaTime;
         }
         wasGrounded = isCurrentlyGrounded;
+
+        if(!isCurrentlyGrounded)
+        {
+            timeAirborne += Time.deltaTime;
+        }
     }
 
     bool IsUpright() // Checks if player is standing straight (avoids player being brought up to a wall)

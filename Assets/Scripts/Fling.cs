@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-
 public class PlungerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -44,6 +43,12 @@ public class PlungerMovement : MonoBehaviour
     {
         isCurrentlyGrounded = IsGrounded();
 
+        if (isStickingToWall)
+        {
+            Debug.Log("Velocity while sticking: " + rb.linearVelocity);
+            Debug.Log("Gravity scale while sticking: " + rb.gravityScale);
+            Debug.Log("Constraints: " + rb.constraints);
+        }
 
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
@@ -70,7 +75,7 @@ public class PlungerMovement : MonoBehaviour
         }
 
         // Handle movement
-        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space))
+        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space) && ((Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.D))))
         {
             HandleCharging();
         }
@@ -81,7 +86,7 @@ public class PlungerMovement : MonoBehaviour
 
         canStick = Input.GetKey(KeyCode.Space);
 
-        if(Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity == Vector2.zero) // Release to launch
+        if(Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity == Vector2.zero && isCharging) // Release to launch
         {
             Launch();
         }
@@ -173,7 +178,9 @@ public class PlungerMovement : MonoBehaviour
         Vector2 upWallLaunchDir, downWallLaunchDir;
 
         rb.linearVelocity = Vector2.zero; // Reset velocity
+        
         rb.gravityScale = 10; // Reset gravity
+
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
         
         if(isStickingToWall)
@@ -189,6 +196,8 @@ public class PlungerMovement : MonoBehaviour
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 else if(input > 0)
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
+
+                
             }
             else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
             {
@@ -207,6 +216,7 @@ public class PlungerMovement : MonoBehaviour
         // Reset
         isCharging = false;
         isStickingToWall = false;
+        Debug.Log("isStickingToWall = false (Launch)");
         storedLeanAngle = 0f;
     }
 
@@ -220,8 +230,8 @@ public class PlungerMovement : MonoBehaviour
 
     bool isRotatedOnWall()
     {
-        float rotation = Mathf.Abs(rb.rotation % 360);
-        return (Mathf.Abs(rotation - 90) <= 15 || Mathf.Abs(rotation - 270) <= 15);
+        float rotation = rb.rotation % 360;
+        return ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105) || (rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285));
     }
 
     //  Wall Detection Using OnCollisionEnter2D
@@ -231,7 +241,7 @@ public class PlungerMovement : MonoBehaviour
         {
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && Input.GetKey(KeyCode.Space))
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && Input.GetKeyDown(KeyCode.Space))
                 {
                     StickToWall();
                     break;
@@ -281,11 +291,10 @@ public class PlungerMovement : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
-
-
     private void unstickPlayer()
     {
         isStickingToWall = false;
+        Debug.Log("isStickingToWall = false (UnstickPlayer)");
         isCharging = false; // Resets sprite
         storedLeanAngle = 0f; // Resets stored angle
         rb.gravityScale = 10;
@@ -324,5 +333,4 @@ public class PlungerMovement : MonoBehaviour
             Debug.LogWarning("Tilemap not found! Make sure it's named correctly in the hierarchy.");
         }
     }
-
 }
