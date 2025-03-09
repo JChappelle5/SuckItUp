@@ -9,7 +9,6 @@ public class PlungerMovement : MonoBehaviour
     public float maxPullBack = 45f;
     public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
-    private float leanAngle = 0f;
     private bool isCharging = false;
     private bool isStickingToWall = false;
     public LayerMask stickableSurfaceLayer;
@@ -20,7 +19,6 @@ public class PlungerMovement : MonoBehaviour
     private float storedLeanAngle = 0f;
     public float normalFactor = 1f;
     public float slowdownFactor = 0.7f;
-    public bool canStick = false;
     public Sprite PlayerStanding; 
     public Sprite PlayerLeft1;
     public Sprite PlayerLeft2;
@@ -43,13 +41,6 @@ public class PlungerMovement : MonoBehaviour
     {
         isCurrentlyGrounded = IsGrounded();
 
-        if (isStickingToWall)
-        {
-            Debug.Log("Velocity while sticking: " + rb.linearVelocity);
-            Debug.Log("Gravity scale while sticking: " + rb.gravityScale);
-            Debug.Log("Constraints: " + rb.constraints);
-        }
-
         // Debug print when grounded state changes
         if (isCurrentlyGrounded && !wasGrounded)
         {
@@ -63,8 +54,9 @@ public class PlungerMovement : MonoBehaviour
         }
         wasGrounded = isCurrentlyGrounded;
 
-        if(!isCharging && !isStickingToWall)
+        if(!isCharging && !isStickingToWall && wasGrounded)
         {
+            storedLeanAngle = 0f;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
         }
 
@@ -84,10 +76,15 @@ public class PlungerMovement : MonoBehaviour
             HandleAirRotation();
         }
 
-        canStick = Input.GetKey(KeyCode.Space);
-
-        if(Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity == Vector2.zero && isCharging) // Release to launch
+        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && !isCharging) // Reset if not charging
         {
+            storedLeanAngle = 0f;
+            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && isCharging) // Release to launch
+        {
+            Debug.Log("Space was released.");
             Launch();
         }
 
@@ -113,9 +110,9 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleCharging()
     {
-
         rb.linearVelocity = Vector2.zero;
         float input = -Input.GetAxisRaw("Horizontal");
+
         if (input != 0)
         {
             isCharging = true;
@@ -154,6 +151,9 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleAirRotation()
     {
+        storedLeanAngle = 0f;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+
         float input = -Input.GetAxisRaw("Horizontal");
         if (input != 0)
         {
@@ -177,11 +177,10 @@ public class PlungerMovement : MonoBehaviour
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
         Vector2 upWallLaunchDir, downWallLaunchDir;
 
-        rb.linearVelocity = Vector2.zero; // Reset velocity
-        
         rb.gravityScale = 10; // Reset gravity
-
+        Debug.Log("Gravity Reset");
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
+        rb.linearVelocity = Vector2.zero; // Reset velocity
         
         if(isStickingToWall)
         {
@@ -193,11 +192,13 @@ public class PlungerMovement : MonoBehaviour
                 downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
 
                 if(input < 0) // facing upwards
+                {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
+                }
                 else if(input > 0)
+                {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
-
-                
+                }
             }
             else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
             {
@@ -205,13 +206,19 @@ public class PlungerMovement : MonoBehaviour
                 downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
 
                 if(input < 0) // facing upwards
+                {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
+                }
                 else if(input > 0)
+                {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
+                }
             }
         }
         else
+        {
             rb.AddForce(launchDirection * launchForce, ForceMode2D.Impulse);
+        }
 
         // Reset
         isCharging = false;
@@ -255,13 +262,24 @@ public class PlungerMovement : MonoBehaviour
     {
         if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
-            foreach (ContactPoint2D contact in collision.contacts)
+            // Checks if player is touching/rotated on wall
+            if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall() && Input.GetKey(KeyCode.Space))
+                if (Input.GetKey(KeyCode.Space)) // if holding space stick to wall
                 {
-                    StickToWall(); 
-                    break;
+                    StickToWall();
                 }
+                else if (isStickingToWall && !TimerOn)
+                {
+                    // Start the timer if we're stuck but timer isn't running
+                    TimerOn = true;
+                    stickTime = 3f;
+                }
+            }
+            else if (isStickingToWall)
+            {
+                // Lost proper wall contact
+                unstickPlayer();
             }
         }
     }
@@ -269,10 +287,9 @@ public class PlungerMovement : MonoBehaviour
     private void StickToWall()
     {
         isStickingToWall = true;
-        rb.linearVelocity = Vector2.zero;
-
+        rb.linearVelocity = Vector2.zero; // Set velocity to 0
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY; // Freeze position
         TimerOn = true;
         stickTime = 3f;
     }
@@ -294,7 +311,6 @@ public class PlungerMovement : MonoBehaviour
     private void unstickPlayer()
     {
         isStickingToWall = false;
-        Debug.Log("isStickingToWall = false (UnstickPlayer)");
         isCharging = false; // Resets sprite
         storedLeanAngle = 0f; // Resets stored angle
         rb.gravityScale = 10;
@@ -330,7 +346,7 @@ public class PlungerMovement : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Tilemap not found! Make sure it's named correctly in the hierarchy.");
+            Debug.LogWarning("Tilemap not found");
         }
     }
 }
