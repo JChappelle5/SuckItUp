@@ -7,6 +7,7 @@ public class PlatformMovement : MonoBehaviour
     public float moveSpeed = 2f;
 
     private Vector3 nextPosition;
+    private GameObject player; // Store reference to the player
 
     void Start()
     {
@@ -17,7 +18,7 @@ public class PlatformMovement : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, nextPosition, moveSpeed * Time.deltaTime);
 
-        if(transform.position == nextPosition)
+        if (transform.position == nextPosition)
         {
             nextPosition = (nextPosition == pointA.position) ? pointB.position : pointA.position;
         }
@@ -27,7 +28,8 @@ public class PlatformMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.transform.parent = transform;
+            player = collision.gameObject; // Store reference
+            player.transform.SetParent(transform);
         }
     }
 
@@ -35,7 +37,18 @@ public class PlatformMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.transform.parent = null;
+            Debug.Log("Player left the platform, resetting parent.");
+            player = collision.gameObject; // Ensure reference is set
+            Invoke(nameof(ResetPlayerParent), 0.01f); // Small delay to fix hierarchy issues
+        }
+    }
+
+    void ResetPlayerParent()
+    {
+        if (player != null && player.transform.parent == transform)
+        {
+            player.transform.SetParent(null);
+            player = null; // Clear reference
         }
     }
 }

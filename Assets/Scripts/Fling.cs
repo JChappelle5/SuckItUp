@@ -106,6 +106,7 @@ public class PlungerMovement : MonoBehaviour
                 stickTime = 3f;
             }
         }
+
     }
 
     void HandleCharging()
@@ -257,6 +258,7 @@ public class PlungerMovement : MonoBehaviour
         }
     }
 
+
     // Restick player if pressing Space while already on the wall (Same as OnEnter but for continuous checks)
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -273,7 +275,6 @@ public class PlungerMovement : MonoBehaviour
                 {
                     // Start the timer if we're stuck but timer isn't running
                     TimerOn = true;
-                    stickTime = 3f;
                 }
             }
             else if (isStickingToWall)
@@ -283,6 +284,7 @@ public class PlungerMovement : MonoBehaviour
             }
         }
     }
+
 
     private void StickToWall()
     {
