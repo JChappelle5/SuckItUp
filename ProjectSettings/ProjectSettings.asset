@@ -708,11 +708,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: ecce6733-610e-4307-980f-f3336ea147cf
+  cloudProjectId: 467651e6-fd4a-4291-981b-05d15898007a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Unity1-$JoshuaChappelle
-  organizationId: joshuachappelle5
+  projectName: Suck It Up! (1)
+  organizationId: bunkleberry
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

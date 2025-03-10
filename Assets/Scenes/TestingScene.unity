@@ -7621,6 +7621,7 @@ MonoBehaviour:
   TimerOn: 0
   stickTime: 0
   isCurrentlyGrounded: 0
+  tilemap: {fileID: 801532038}
 --- !u!68 &566081614
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -7890,6 +7891,7 @@ Transform:
   - {fileID: 238669328}
   - {fileID: 736395354}
   - {fileID: 801532039}
+  - {fileID: 643199862}
   - {fileID: 1262435205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7940,7 +7942,7 @@ GameObject:
   - component: {fileID: 643199864}
   - component: {fileID: 643199863}
   m_Layer: 3
-  m_Name: Tilemap
+  m_Name: Tilemap 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7955,11 +7957,11 @@ Transform:
   m_GameObject: {fileID: 643199861}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.04, y: -6.82, z: 0}
+  m_LocalPosition: {x: 8, y: -7.5500007, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1123464538}
+  m_Father: {fileID: 604811503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!19719996 &643199863
 TilemapCollider2D:
@@ -29830,7 +29832,6 @@ Transform:
   m_Children:
   - {fileID: 1203458378}
   - {fileID: 814771831}
-  - {fileID: 643199862}
   - {fileID: 227243989}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -41581,7 +41582,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 670, y: 266}
+  m_AnchoredPosition: {x: 900, y: 266}
   m_SizeDelta: {x: 1340, y: 532}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1581813507
