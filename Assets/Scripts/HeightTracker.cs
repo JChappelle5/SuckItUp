@@ -5,30 +5,39 @@ public class HeightTracker : MonoBehaviour
 {
     public Rigidbody2D playerRb;
     public TMP_Text heightText;
-    public float startPos = -3.75f;
     public bool trackingHeight = true;
+
+    // We'll store the final calculated meter value
+    private int currentMeters = 0;
 
     void Update()
     {
-        // always update to display height
-        if(trackingHeight)
+        if (trackingHeight && playerRb != null)
         {
-            displayHeight(startPos);
+            DisplayHeight();
         }
     }
 
-    void displayHeight(float displayedHeight)
+    void DisplayHeight()
     {
-        if(playerRb == null) return; // stops errors if player isn't attatched
+        // Convert Y position to “meters” based on your ratio (1 meter ~ 5.235 units)
+        int meters = Mathf.FloorToInt(playerRb.position.y / 5.235f);
 
-        int meters = Mathf.FloorToInt(playerRb.position.y / 5.235f); // does initial check for current height
-        if(meters == -1) // bottom of level (-2m)
+        // The custom logic you had: if meters == -1 => 0, etc.
+        if (meters == -1)
             meters = 0;
-        else if(meters == 0) // 1 meter up (-1m)
+        else if (meters == 0)
             meters = 1;
         else
-            meters = Mathf.FloorToInt(playerRb.position.y / 5.235f) + 1; // gets # of meters + 1 to account for the -1
+            meters = Mathf.FloorToInt(playerRb.position.y / 5.235f) + 1;
 
-        heightText.text = string.Format("{0}m", meters); // displays height i.e. 1m, 5m, 10m, etc.
+        currentMeters = meters;
+        heightText.text = $"{meters}m";
+    }
+
+    // Public getter so other scripts (like MeterBasedZoneDetector) can read it
+    public int GetCurrentMeters()
+    {
+        return currentMeters;
     }
 }
