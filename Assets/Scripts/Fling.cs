@@ -5,7 +5,6 @@ public class PlungerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     public float rotationSpeed = 50f;
-    public float airRotationSpeed = 100f;
     public float maxPullBack = 45f;
     public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
@@ -33,6 +32,7 @@ public class PlungerMovement : MonoBehaviour
 
     void Awake()
     {
+        Application.targetFrameRate = 240;
         stickTime = 3f;
         rb = GetComponent<Rigidbody2D>();
     }
@@ -66,16 +66,6 @@ public class PlungerMovement : MonoBehaviour
             stickTime = 3f;
         }
 
-        // Handle movement
-        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space) && ((Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.D))))
-        {
-            HandleCharging();
-        }
-        else if (!isCurrentlyGrounded && !isStickingToWall)
-        {
-            HandleAirRotation();
-        }
-
         if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && !isCharging) // Reset if not charging
         {
             storedLeanAngle = 0f;
@@ -107,6 +97,19 @@ public class PlungerMovement : MonoBehaviour
             }
         }
 
+    }
+
+    void FixedUpdate()
+    {
+        // Handle movement
+        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space) && ((Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.D))))
+        {
+            HandleCharging();
+        }
+        else if (!isCurrentlyGrounded && !isStickingToWall)
+        {
+            HandleAirRotation();
+        }
     }
 
     void HandleCharging()
@@ -158,7 +161,7 @@ public class PlungerMovement : MonoBehaviour
         float input = -Input.GetAxisRaw("Horizontal");
         if (input != 0)
         {
-            float rotation = input * airRotationSpeed * Time.deltaTime;
+            float rotation = input * 10.15f;
             rb.MoveRotation(rb.rotation + rotation);
         }
     }
