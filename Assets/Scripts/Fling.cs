@@ -121,6 +121,11 @@ public class PlungerMovement : MonoBehaviour
 
         if (input != 0)
         {
+            if(!isCharging)
+            {
+                storedLeanAngle = 0f;
+            }
+
             isCharging = true;
             storedLeanAngle += input * rotationSpeed * Time.fixedDeltaTime;
             storedLeanAngle = Mathf.Clamp(storedLeanAngle, -maxPullBack, maxPullBack);
@@ -318,6 +323,7 @@ public class PlungerMovement : MonoBehaviour
         if(((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity == Vector2.zero) // on ground
         {
             rb.rotation = 0;
+            rb.angularVelocity = 0;
         }
     }
     
