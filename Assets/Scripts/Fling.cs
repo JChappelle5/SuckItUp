@@ -46,12 +46,12 @@ public class PlungerMovement : MonoBehaviour
         if (isCurrentlyGrounded && !wasGrounded)
         {
             regularSpeedMotion();
-            Debug.Log("Player is grounded.");
+            //Debug.Log("Player is grounded.");
         }
         else if (!isCurrentlyGrounded && wasGrounded)
         {
             slowSpeedMotion();
-            Debug.Log("Player is airborne.");
+            //Debug.Log("Player is airborne.");
         }
         wasGrounded = isCurrentlyGrounded;
 
@@ -67,15 +67,14 @@ public class PlungerMovement : MonoBehaviour
             stickTime = 3f;
         }
 
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && !isCharging) // Reset if not charging
+        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
         {
             storedLeanAngle = 0f;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
         }
 
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && isCharging) // Release to launch
+        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
         {
-            Debug.Log("Space was released.");
             Launch();
         }
 
@@ -177,25 +176,32 @@ public class PlungerMovement : MonoBehaviour
     {
         if (!isCharging) return;
 
+        if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
+        {
+            isStickingToWall = true;  // Force stick state if we're actually on wall
+        }
+
+        Debug.Log($"Launch - Charge: {storedLeanAngle}, IsSticking: {isStickingToWall}, Rotation: {rb.rotation}");
+
         this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
 
         float chargePercent = Mathf.Abs(storedLeanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
-
         float input = -Input.GetAxisRaw("Horizontal");
-
         float angleRad = storedLeanAngle * Mathf.Deg2Rad;
+
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
         Vector2 upWallLaunchDir, downWallLaunchDir;
 
         rb.gravityScale = 10; // Reset gravity
-        Debug.Log("Gravity Reset");
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
         rb.linearVelocity = Vector2.zero; // Reset velocity
         
         if(isStickingToWall)
         {
             float rotation = rb.rotation % 360;
+
+            Debug.Log($"Wall Launch - Rotation: {rotation}, Input: {input}, LaunchForce: {launchForce}");
 
             if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
             {
@@ -234,7 +240,6 @@ public class PlungerMovement : MonoBehaviour
         // Reset
         isCharging = false;
         isStickingToWall = false;
-        Debug.Log("isStickingToWall = false (Launch)");
         storedLeanAngle = 0f;
     }
 
@@ -320,7 +325,7 @@ public class PlungerMovement : MonoBehaviour
     private void checkOnFloor()
     {
         float rotation = rb.rotation % 360;
-        if(((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity == Vector2.zero) // on ground
+        if(((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity.magnitude < 0.01f) // on ground
         {
             rb.rotation = 0;
             rb.angularVelocity = 0;
