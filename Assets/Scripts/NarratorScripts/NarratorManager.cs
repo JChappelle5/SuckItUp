@@ -1,35 +1,48 @@
 using UnityEngine;
-using System.Collections;
 
 public class NarratorManager : MonoBehaviour
 {
+    [Header("Audio Source")]
     public AudioSource audioSource;
 
-    [Header("All Falls (Used for big falls)")]
-    public AudioClip[] allFalls;
+    [Header("Big Fall Clips")]
+    public AudioClip[] bigFallLowFrustration;
+    public AudioClip[] bigFallMediumFrustration;
+    public AudioClip[] bigFallHighFrustration;
 
-    [Header("New Heights")]
-    public AudioClip[] newHeightClips;
+    [Header("Repeated Fall Clips")]
+    public AudioClip[] repeatedFallLowFrustration;
+    public AudioClip[] repeatedFallMediumFrustration;
+    public AudioClip[] repeatedFallHighFrustration;
 
-    [Header("Repeated Falls")]
-    public AudioClip[] repeatedFallClips; // Added this for repeated fall audios
+    [Header("New Height Clips")]
+    public AudioClip[] newHeightLowFrustration;
+    public AudioClip[] newHeightMediumFrustration;
+    public AudioClip[] newHeightHighFrustration;
 
-    public bool isPlayingAudio = false; // Tracks whether an audio clip is currently playing
+    public bool isPlayingAudio => audioSource.isPlaying;
 
-    public void PlayRandomClip(AudioClip[] clipArray)
+    public void PlayRandomClip(AudioClip[] clips)
     {
-        if (clipArray == null || clipArray.Length == 0 || isPlayingAudio) return;
+        if (clips.Length == 0) return;
 
-        AudioClip chosenClip = clipArray[Random.Range(0, clipArray.Length)];
-        audioSource.PlayOneShot(chosenClip);
-        isPlayingAudio = true;
-
-        StartCoroutine(ResetAudioLock(chosenClip.length));
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        audioSource.clip = clip;
+        audioSource.Play();
     }
 
-    private IEnumerator ResetAudioLock(float duration)
+    // Select clip based on frustration level
+    public void PlayClipBasedOnFrustration(AudioClip[] low, AudioClip[] medium, AudioClip[] high, float frustration)
     {
-        yield return new WaitForSeconds(duration);
-        isPlayingAudio = false;
+        AudioClip[] selectedClips;
+
+        if (frustration <= 3)
+            selectedClips = low;
+        else if (frustration <= 7)
+            selectedClips = medium;
+        else
+            selectedClips = high;
+
+        PlayRandomClip(selectedClips);
     }
 }

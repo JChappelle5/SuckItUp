@@ -37,8 +37,6 @@ public class LocalDataLogger : MonoBehaviour
         totalFallDistance += distanceFallenMeters;
         if (distanceFallenMeters > largestFallDistance)
             largestFallDistance = distanceFallenMeters;
-
-        Debug.Log($"[Logger] Fall recorded: {distanceFallenMeters:F2}m (largest so far: {largestFallDistance:F2}m)");
     }
 
     //================ ZONE RECORDING =================
@@ -48,8 +46,6 @@ public class LocalDataLogger : MonoBehaviour
         // e.g. "Zone0=01:38"
         string entry = $"{zoneName}={timeString}";
         zoneDataList.Add(entry);
-
-        Debug.Log($"[Logger] Zone entry recorded: {entry}");
     }
 
     //================ SAVE TO CSV =================
@@ -84,11 +80,8 @@ public class LocalDataLogger : MonoBehaviour
 
         // 5) Append to file
         File.AppendAllText(path, newLine);
-
-        Debug.Log($"[Logger] Data saved to {path}");
     }
 
-    // Auto-save when the game quits
     private void OnApplicationQuit()
     {
         SaveData();
