@@ -39,64 +39,66 @@ public class PlungerMovement : MonoBehaviour
 
     void Update()
     {
-        isCurrentlyGrounded = IsGrounded();
-        checkOnFloor();
+        if(!PauseMenu.isPaused) // Check if game is paused
+        {
+            isCurrentlyGrounded = IsGrounded();
+            checkOnFloor();
 
-        // Debug print when grounded state changes
-        if (isCurrentlyGrounded && !wasGrounded)
-        {
-            regularSpeedMotion();
-            //Debug.Log("Player is grounded.");
-        }
-        else if (!isCurrentlyGrounded && wasGrounded)
-        {
-            slowSpeedMotion();
-            //Debug.Log("Player is airborne.");
-        }
-        wasGrounded = isCurrentlyGrounded;
-
-        if(!isCharging && !isStickingToWall && wasGrounded)
-        {
-            storedLeanAngle = 0f;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
-        }
-
-        if(isCurrentlyGrounded && !isRotatedOnWall())
-        {
-            TimerOn = false;
-            stickTime = 3f;
-        }
-
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
-        {
-            storedLeanAngle = 0f;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
-        }
-
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
-        {
-            Launch();
-        }
-
-        if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
-        {
-            StickToWall(); // Stick if pressing Space while on the wall
-        }
-
-        if (TimerOn && isStickingToWall)
-        {
-            if (stickTime > 0)
+            // Debug print when grounded state changes
+            if (isCurrentlyGrounded && !wasGrounded)
             {
-                stickTime -= Time.deltaTime;
+                regularSpeedMotion();
+                //Debug.Log("Player is grounded.");
             }
-            else
+            else if (!isCurrentlyGrounded && wasGrounded)
             {
-                unstickPlayer();
+                slowSpeedMotion();
+                //Debug.Log("Player is airborne.");
+            }
+            wasGrounded = isCurrentlyGrounded;
+
+            if(!isCharging && !isStickingToWall && wasGrounded)
+            {
+                storedLeanAngle = 0f;
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+            }
+
+            if(isCurrentlyGrounded && !isRotatedOnWall())
+            {
                 TimerOn = false;
                 stickTime = 3f;
             }
-        }
 
+            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
+            {
+                storedLeanAngle = 0f;
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+            }
+
+            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
+            {
+                Launch();
+            }
+
+            if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
+            {
+                StickToWall(); // Stick if pressing Space while on the wall
+            }
+
+            if (TimerOn && isStickingToWall)
+            {
+                if (stickTime > 0)
+                {
+                    stickTime -= Time.deltaTime;
+                }
+                else
+                {
+                    unstickPlayer();
+                    TimerOn = false;
+                    stickTime = 3f;
+                }
+            }
+        }
     }
 
     void FixedUpdate()

@@ -1,0 +1,843 @@
+fileFormatVersion: 2
+guid: bdbdd593a37777c4090af8d6100a716e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4625855731846084803
+    second: MoreTextButtons_0
+  - first:
+      213: -8620994011913657778
+    second: MoreTextButtons_1
+  - first:
+      213: 6543928228844752426
+    second: MoreTextButtons_2
+  - first:
+      213: 4913189564251638547
+    second: MoreTextButtons_3
+  - first:
+      213: 6274880726394895350
+    second: MoreTextButtons_4
+  - first:
+      213: -5144688287328874881
+    second: MoreTextButtons_5
+  - first:
+      213: -3713951339514629668
+    second: MoreTextButtons_6
+  - first:
+      213: 4040807070225653501
+    second: MoreTextButtons_7
+  - first:
+      213: 5774080419733885130
+    second: MoreTextButtons_8
+  - first:
+      213: -4655522203954256256
+    second: MoreTextButtons_9
+  - first:
+      213: -517112945715269884
+    second: MoreTextButtons_10
+  - first:
+      213: -8366446033404196616
+    second: MoreTextButtons_11
+  - first:
+      213: -5762968549431434197
+    second: MoreTextButtons_12
+  - first:
+      213: -3438998873724351108
+    second: MoreTextButtons_13
+  - first:
+      213: 6058159330872202631
+    second: MoreTextButtons_14
+  - first:
+      213: 1002839176882215738
+    second: MoreTextButtons_15
+  - first:
+      213: -2444763251070893613
+    second: MoreTextButtons_16
+  - first:
+      213: 8617558353198427335
+    second: MoreTextButtons_17
+  - first:
+      213: -929142688857144127
+    second: MoreTextButtons_18
+  - first:
+      213: -3492935271289001643
+    second: MoreTextButtons_19
+  - first:
+      213: 5492637417913279056
+    second: MoreTextButtons_20
+  - first:
+      213: -5169958367798571851
+    second: MoreTextButtons_21
+  - first:
+      213: -5919462461128774159
+    second: MoreTextButtons_22
+  - first:
+      213: 8596534965433389657
+    second: MoreTextButtons_23
+  - first:
+      213: -802485661037874707
+    second: MoreTextButtons_24
+  - first:
+      213: -739618559950277732
+    second: MoreTextButtons_25
+  - first:
+      213: 795241139450711856
+    second: MoreTextButtons_26
+  - first:
+      213: 6266303624576783260
+    second: MoreTextButtons_27
+  - first:
+      213: -3623293638788838977
+    second: MoreTextButtons_28
+  - first:
+      213: -4099225001887239677
+    second: MoreTextButtons_29
+  - first:
+      213: 6062188300708509897
+    second: MoreTextButtons_30
+  - first:
+      213: -4283780970354914834
+    second: MoreTextButtons_31
+  - first:
+      213: 6182133384166497903
+    second: MoreTextButtons_32
+  - first:
+      213: 5848130005662865172
+    second: MoreTextButtons_33
+  - first:
+      213: -7395983796400109892
+    second: MoreTextButtons_34
+  - first:
+      213: 509718793762726497
+    second: MoreTextButtons_35
+  - first:
+      213: -5531895236857485784
+    second: MoreTextButtons_36
+  - first:
+      213: 2487382488712603263
+    second: MoreTextButtons_37
+  - first:
+      213: 2473108646424846209
+    second: MoreTextButtons_38
+  - first:
+      213: 6733897666707832530
+    second: MoreTextButtons_39
+  - first:
+      213: 1804546849827347193
+    second: MoreTextButtons_40
+  - first:
+      213: 7952126503579070903
+    second: MoreTextButtons_41
+  - first:
+      213: 7528087621438421755
+    second: MoreTextButtons_42
+  - first:
+      213: 4901467159269027173
+    second: MoreTextButtons_43
+  - first:
+      213: -917743056731808787
+    second: MoreTextButtons_44
+  - first:
+      213: -7809004501219886407
+    second: MoreTextButtons_45
+  - first:
+      213: -4167604653868281010
+    second: MoreTextButtons_46
+  - first:
+      213: 4528669836191571821
+    second: MoreTextButtons_47
+  - first:
+      213: -8495881280109889438
+    second: MoreTextButtons_48
+  - first:
+      213: -548161720361830078
+    second: MoreTextButtons_49
+  - first:
+      213: -4176365665896828338
+    second: MoreTextButtons_50
+  - first:
+      213: -8026668279833399329
+    second: MoreTextButtons_51
+  - first:
+      213: 5456268704177671782
+    second: MoreTextButtons_52
+  - first:
+      213: -6680106655571041386
+    second: MoreTextButtons_53
+  - first:
+      213: 727030069368630639
+    second: MoreTextButtons_54
+  - first:
+      213: 5149344271231745623
+    second: MoreTextButtons_55
+  - first:
+      213: 5926763580618245670
+    second: MoreTextButtons_56
+  - first:
+      213: 4963681475159965756
+    second: MoreTextButtons_57
+  - first:
+      213: -5545167717473326722
+    second: MoreTextButtons_58
+  - first:
+      213: 605564485489943076
+    second: MoreTextButtons_59
+  - first:
+      213: 3876176850695675179
+    second: MoreTextButtons_60
+  - first:
+      213: -2200324937461692506
+    second: MoreTextButtons_61
+  - first:
+      213: -4297923070960909943
+    second: MoreTextButtons_62
+  - first:
+      213: -8430638724438113369
+    second: MoreTextButtons_63
+  - first:
+      213: 745148825770693159
+    second: MoreTextButtons_64
+  - first:
+      213: -3439592896432403521
+    second: MoreTextButtons_65
+  - first:
+      213: -705723487772225798
+    second: MoreTextButtons_66
+  - first:
+      213: -3273263007351979662
+    second: MoreTextButtons_67
+  - first:
+      213: 1948128659919347806
+    second: MoreTextButtons_68
+  - first:
+      213: 3191824927978505882
+    second: MoreTextButtons_69
+  - first:
+      213: 6682078343682289278
+    second: MoreTextButtons_70
+  - first:
+      213: -8033799959736721903
+    second: MoreTextButtons_71
+  - first:
+      213: 1607718942553575291
+    second: MoreTextButtons_72
+  - first:
+      213: -3816898529007016827
+    second: MoreTextButtons_73
+  - first:
+      213: -849241591178137076
+    second: MoreTextButtons_74
+  - first:
+      213: 5946303089089062553
+    second: MoreTextButtons_75
+  - first:
+      213: 6679713996712782469
+    second: MoreTextButtons_76
+  - first:
+      213: -273357273616378220
+    second: MoreTextButtons_77
+  - first:
+      213: 958335395965236240
+    second: MoreTextButtons_78
+  - first:
+      213: -6850109023945128364
+    second: MoreTextButtons_79
+  - first:
+      213: 3706815579734712808
+    second: MoreTextButtons_80
+  - first:
+      213: 8112880402681427385
+    second: MoreTextButtons_81
+  - first:
+      213: 2941437620627188392
+    second: MoreTextButtons_82
+  - first:
+      213: -7505161669175059231
+    second: MoreTextButtons_83
+  - first:
+      213: -8842012159617928869
+    second: MoreTextButtons_84
+  - first:
+      213: 3223339655056267871
+    second: MoreTextButtons_85
+  - first:
+      213: 3020494513131227494
+    second: MoreTextButtons_86
+  - first:
+      213: -2272785066406618455
+    second: MoreTextButtons_87
+  - first:
+      213: -7888888765669841430
+    second: MoreTextButtons_88
+  - first:
+      213: 7921071180141571985
+    second: MoreTextButtons_89
+  - first:
+      213: 9139828687790686788
+    second: MoreTextButtons_90
+  - first:
+      213: -5933917348928683766
+    second: MoreTextButtons_91
+  - first:
+      213: -1952896715689829701
+    second: MoreTextButtons_92
+  - first:
+      213: 7592518909211057481
+    second: MoreTextButtons_93
+  - first:
+      213: -117151387729497882
+    second: MoreTextButtons_94
+  - first:
+      213: 3173160951983642589
+    second: MoreTextButtons_95
+  - first:
+      213: -7643791027242687162
+    second: MoreTextButtons_96
+  - first:
+      213: 288492843134683489
+    second: MoreTextButtons_97
+  - first:
+      213: -6517303113800037655
+    second: MoreTextButtons_98
+  - first:
+      213: -1490397534511280582
+    second: MoreTextButtons_99
+  - first:
+      213: 8601796785942794904
+    second: MoreTextButtons_100
+  - first:
+      213: 8457317501328490123
+    second: MoreTextButtons_101
+  - first:
+      213: 1098444555622229990
+    second: MoreTextButtons_102
+  - first:
+      213: 8682949266590680020
+    second: MoreTextButtons_103
+  - first:
+      213: -6888017647537103287
+    second: MoreTextButtons_104
+  - first:
+      213: 6467570201731259207
+    second: MoreTextButtons_105
+  - first:
+      213: -3537977456981079988
+    second: MoreTextButtons_106
+  - first:
+      213: 8317331974142245429
+    second: MoreTextButtons_107
+  - first:
+      213: -5853896614888235599
+    second: MoreTextButtons_108
+  - first:
+      213: -9073314215677225033
+    second: MoreTextButtons_109
+  - first:
+      213: 5542597027129845447
+    second: MoreTextButtons_110
+  - first:
+      213: -2126914624452601031
+    second: MoreTextButtons_111
+  - first:
+      213: 3564206096450022752
+    second: MoreTextButtons_112
+  - first:
+      213: -7037706422055207653
+    second: MoreTextButtons_113
+  - first:
+      213: -6289861826260368093
+    second: MoreTextButtons_114
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SettingsNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1649
+        width: 795
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c8f3ee7747523040800000000000000
+      internalID: 4625855731846084803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SettingsHighlight
+      rect:
+        serializedVersion: 2
+        x: 1447
+        y: 1649
+        width: 795
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac0d6c2ac87a12050800000000000000
+      internalID: 5774080419733885130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SettingsSelect
+      rect:
+        serializedVersion: 2
+        x: 2838
+        y: 1650
+        width: 793
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cca7991aa7b79770800000000000000
+      internalID: 8617558353198427335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ContinueNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1428
+        width: 869
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c93b0e0a6d85cb5f0800000000000000
+      internalID: -739618559950277732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ContinueHighlight
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 1428
+        width: 869
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41796d3614bb82150800000000000000
+      internalID: 5848130005662865172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ContinueSelect
+      rect:
+        serializedVersion: 2
+        x: 2799
+        y: 1428
+        width: 869
+        height: 157
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b1bcce3ce0ab5e60800000000000000
+      internalID: 7952126503579070903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ResetNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1158
+        width: 511
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e42f410ed819a06c0800000000000000
+      internalID: -4176365665896828338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ResetHighlight
+      rect:
+        serializedVersion: 2
+        x: 1587
+        y: 1158
+        width: 511
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75ef5f01555267740800000000000000
+      internalID: 5149344271231745623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ResetSelect
+      rect:
+        serializedVersion: 2
+        x: 2997
+        y: 1159
+        width: 511
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2dde401f42fac530800000000000000
+      internalID: 3876176850695675179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RestartNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 902
+        width: 699
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbb80340c7c1440d0800000000000000
+      internalID: -3439592896432403521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RestartHighlight
+      rect:
+        serializedVersion: 2
+        x: 1493
+        y: 902
+        width: 699
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7f82953cd3cf4610800000000000000
+      internalID: 1607718942553575291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RestartSelect
+      rect:
+        serializedVersion: 2
+        x: 2903
+        y: 902
+        width: 699
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4568d0bd2268fe0a0800000000000000
+      internalID: -6850109023945128364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GiveUpText
+      rect:
+        serializedVersion: 2
+        x: 981
+        y: 577
+        width: 1639
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6690435a1c3fae920800000000000000
+      internalID: 3020494513131227494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AreYouSure
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 358
+        width: 1359
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3e465db65b015be0800000000000000
+      internalID: -1490397534511280582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YesNormal
+      rect:
+        serializedVersion: 2
+        x: 1219
+        y: 180
+        width: 325
+        height: 154
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c6e53751a24bec40800000000000000
+      internalID: 5542597027129845447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NoNormal
+      rect:
+        serializedVersion: 2
+        x: 2106
+        y: 181
+        width: 243
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1df9e7eb4b055e90800000000000000
+      internalID: -7037706422055207653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: f20986dab2383a9408c780f4e624ab68
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      AreYouSure: -1490397534511280582
+      ContinueHighlight: 5848130005662865172
+      ContinueNormal: -739618559950277732
+      ContinueSelect: 7952126503579070903
+      GiveUpText: 3020494513131227494
+      NoNormal: -7037706422055207653
+      ResetHighlight: 5149344271231745623
+      ResetNormal: -4176365665896828338
+      ResetSelect: 3876176850695675179
+      RestartHighlight: 1607718942553575291
+      RestartNormal: -3439592896432403521
+      RestartSelect: -6850109023945128364
+      SettingsHighlight: 5774080419733885130
+      SettingsNormal: 4625855731846084803
+      SettingsSelect: 8617558353198427335
+      YesNormal: 5542597027129845447
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

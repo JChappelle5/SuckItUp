@@ -1,0 +1,481 @@
+fileFormatVersion: 2
+guid: c099d1d41dc16e540866626f70c4d546
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2050901918231889133
+    second: OtherButtons_0
+  - first:
+      213: 9031301483239272295
+    second: OtherButtons_1
+  - first:
+      213: -7921224255916756373
+    second: OtherButtons_2
+  - first:
+      213: 7729559537559003556
+    second: OtherButtons_3
+  - first:
+      213: -3118756654458942478
+    second: OtherButtons_4
+  - first:
+      213: 4150382449819399839
+    second: OtherButtons_5
+  - first:
+      213: 6092955888726515111
+    second: OtherButtons_6
+  - first:
+      213: -5934451227658373066
+    second: OtherButtons_7
+  - first:
+      213: 3553942987919703711
+    second: OtherButtons_8
+  - first:
+      213: -8119791031033280221
+    second: OtherButtons_9
+  - first:
+      213: -4842671899033364057
+    second: OtherButtons_10
+  - first:
+      213: 2224796215039793786
+    second: OtherButtons_11
+  - first:
+      213: 2172210051514043160
+    second: OtherButtons_12
+  - first:
+      213: 5112339062833830886
+    second: OtherButtons_13
+  - first:
+      213: 8181395547047132113
+    second: OtherButtons_14
+  - first:
+      213: 5528344641657664109
+    second: OtherButtons_15
+  - first:
+      213: 1818529583008717850
+    second: OtherButtons_16
+  - first:
+      213: -8383094351572190839
+    second: OtherButtons_17
+  - first:
+      213: -5274279797874762182
+    second: OtherButtons_18
+  - first:
+      213: 7079444368591484617
+    second: OtherButtons_19
+  - first:
+      213: 688378216393388659
+    second: OtherButtons_20
+  - first:
+      213: 7938637850001104596
+    second: OtherButtons_21
+  - first:
+      213: -1720525849041174899
+    second: OtherButtons_22
+  - first:
+      213: -4337251590770957317
+    second: OtherButtons_23
+  - first:
+      213: -5308103569512260466
+    second: OtherButtons_24
+  - first:
+      213: 7595698337975970244
+    second: OtherButtons_25
+  - first:
+      213: -5820242672146975824
+    second: OtherButtons_26
+  - first:
+      213: 7082160740758434535
+    second: OtherButtons_27
+  - first:
+      213: 8529290375498023861
+    second: OtherButtons_28
+  - first:
+      213: -4839109944189251583
+    second: OtherButtons_29
+  - first:
+      213: -9093930813232060944
+    second: OtherButtons_30
+  - first:
+      213: 246007872549385940
+    second: OtherButtons_31
+  - first:
+      213: -5465547994500674707
+    second: OtherButtons_32
+  - first:
+      213: 5687109714441665918
+    second: OtherButtons_33
+  - first:
+      213: -8476487567024588823
+    second: OtherButtons_34
+  - first:
+      213: -2403884780973091114
+    second: OtherButtons_35
+  - first:
+      213: 6112569621116084243
+    second: OtherButtons_36
+  - first:
+      213: 1842585771691596120
+    second: OtherButtons_37
+  - first:
+      213: 7474539070635490487
+    second: OtherButtons_38
+  - first:
+      213: -344432193756670131
+    second: OtherButtons_39
+  - first:
+      213: 8838815058607316075
+    second: OtherButtons_40
+  - first:
+      213: 5450326708638529280
+    second: OtherButtons_41
+  - first:
+      213: -5647398705739515031
+    second: OtherButtons_42
+  - first:
+      213: -5293533408025610876
+    second: OtherButtons_43
+  - first:
+      213: 7410096648586416352
+    second: OtherButtons_44
+  - first:
+      213: -1463322257260275985
+    second: OtherButtons_45
+  - first:
+      213: 4403710676541064492
+    second: OtherButtons_46
+  - first:
+      213: -6015993702162484409
+    second: OtherButtons_47
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: RetryNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 728
+        width: 523
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31bfe9e429bb983e0800000000000000
+      internalID: -2050901918231889133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RetryHighlight
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 728
+        width: 523
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f96308339de199930800000000000000
+      internalID: 4150382449819399839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RetrySelect
+      rect:
+        serializedVersion: 2
+        x: 3135
+        y: 728
+        width: 523
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a9995eb09f5bccb0800000000000000
+      internalID: -4842671899033364057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BackNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 506
+        width: 454
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6270f14920a8bc40800000000000000
+      internalID: 5528344641657664109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BackHighlight
+      rect:
+        serializedVersion: 2
+        x: 1617
+        y: 506
+        width: 454
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c6f80d052d3f3260800000000000000
+      internalID: 7079444368591484617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BackSelect
+      rect:
+        serializedVersion: 2
+        x: 3204
+        y: 508
+        width: 454
+        height: 152
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf3699e68acfec3c0800000000000000
+      internalID: -4337251590770957317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnstuckNormal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 237
+        width: 812
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e2bf1bbba3e84260800000000000000
+      internalID: 7082160740758434535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnstuckHighlight
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 237
+        width: 812
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e7fb78d7777d5a80800000000000000
+      internalID: -8476487567024588823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnstuckSelect
+      rect:
+        serializedVersion: 2
+        x: 2846
+        y: 237
+        width: 812
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0073932b34373ab40800000000000000
+      internalID: 5450326708638529280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3167cd90a72304243949364b66e97ca1
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BackHighlight: 7079444368591484617
+      BackNormal: 5528344641657664109
+      BackSelect: -4337251590770957317
+      RetryHighlight: 4150382449819399839
+      RetryNormal: -2050901918231889133
+      RetrySelect: -4842671899033364057
+      UnstuckHighlight: -8476487567024588823
+      UnstuckNormal: 7082160740758434535
+      UnstuckSelect: 5450326708638529280
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
