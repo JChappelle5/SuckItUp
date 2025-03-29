@@ -12,10 +12,10 @@ public class PlayerRageEvents : MonoBehaviour
     public float UnityUnitsPerMeter => unityUnitsPerMeter;
 
     [Header("Thresholds (Game Meters)")]
-    public float bigFallThreshold = 0.7f;
-    public float heightCheckpointInterval = 0.5f;
+    public float bigFallThreshold = 0.7f;       // ~3.66 Unity units
+    public float heightCheckpointInterval = 0.5f; // ~2.62 Unity units
     public int repeatFallThreshold = 2;
-    public float minFallDistanceForRepeat = 0.3f;
+    public float minFallDistanceForRepeat = 0.3f; // ~1.57 Unity units
 
     private bool isFalling = false;
     private bool hasLanded = true;
@@ -28,10 +28,16 @@ public class PlayerRageEvents : MonoBehaviour
 
     private float frustrationLevel = 0f;
 
+    // Big fall event flag
+    private bool bigFallEvent = false;
+    public bool BigFallEvent => bigFallEvent;
+    public void ResetBigFallEvent() { bigFallEvent = false; }
+
     void Start()
     {
         highestPointBeforeFall = heightTracker.playerRb.position.y;
         lastHeightCheckpoint = heightTracker.playerRb.position.y;
+        frustrationLevel = 6f; // Start at moderate frustration
     }
 
     void Update()
@@ -39,6 +45,7 @@ public class PlayerRageEvents : MonoBehaviour
         float currentHeight = heightTracker.playerRb.position.y;
         float verticalVelocity = heightTracker.playerRb.linearVelocity.y;
 
+        // Start falling
         if (!isFalling && hasLanded && verticalVelocity < -velocityThreshold)
         {
             isFalling = true;
@@ -47,6 +54,7 @@ public class PlayerRageEvents : MonoBehaviour
             Debug.Log($"Started falling from height: {highestPointBeforeFall}");
         }
 
+        // Landing detection
         if (isFalling && !hasLanded && Mathf.Abs(verticalVelocity) < velocityThreshold)
         {
             isFalling = false;
@@ -58,6 +66,7 @@ public class PlayerRageEvents : MonoBehaviour
             if (fallDistanceMeters >= bigFallThreshold)
             {
                 IncreaseFrustration(1f);
+                bigFallEvent = true;
                 Debug.Log("Big Fall detected!");
             }
 
@@ -82,8 +91,8 @@ public class PlayerRageEvents : MonoBehaviour
             }
         }
 
+        // New Height Checkpoint (update not done here)
         float heightCheckpointMeters = (currentHeight - lastHeightCheckpoint) / unityUnitsPerMeter;
-
         if (heightCheckpointMeters >= heightCheckpointInterval)
         {
             Debug.Log($"New Height condition met at: {currentHeight}");
@@ -93,6 +102,10 @@ public class PlayerRageEvents : MonoBehaviour
             highestPointBeforeFall = currentHeight;
     }
 
+    // Expose whether the player is landed
+    public bool IsLanded => hasLanded;
+
+    // Called from the Behavior Tree when new height audio plays
     public void UpdateLastHeightCheckpoint()
     {
         lastHeightCheckpoint = CurrentHeight;
@@ -102,12 +115,14 @@ public class PlayerRageEvents : MonoBehaviour
     public void IncreaseFrustration(float amount)
     {
         frustrationLevel += amount;
+        frustrationLevel = Mathf.Clamp(frustrationLevel, 1f, 10f);
         Debug.Log($"Frustration increased to {frustrationLevel}");
     }
 
     public void DecreaseFrustration(float amount)
     {
-        frustrationLevel = Mathf.Max(0f, frustrationLevel - amount);
+        frustrationLevel -= amount;
+        frustrationLevel = Mathf.Clamp(frustrationLevel, 1f, 10f);
         Debug.Log($"Frustration decreased to {frustrationLevel}");
     }
 

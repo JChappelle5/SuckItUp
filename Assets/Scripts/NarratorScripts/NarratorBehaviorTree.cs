@@ -42,28 +42,37 @@ public class NarratorBehaviorTree : MonoBehaviour
         bool repeatedFallsDetected =
             playerRageEvents.ConsecutiveFallCount >= playerRageEvents.repeatFallThreshold;
 
-        bool newHeightDetected =
+        // Only trigger new height when player is landed
+        bool newHeightDetected = playerRageEvents.IsLanded &&
             ((playerRageEvents.CurrentHeight - playerRageEvents.LastHeightCheckpoint) / playerRageEvents.UnityUnitsPerMeter)
             >= playerRageEvents.heightCheckpointInterval;
+
+        bool isFrustrated = playerRageEvents.FrustrationLevel >= frustrationThreshold;
 
         behaviorTree.Blackboard["bigFall"] = bigFallDetected;
         behaviorTree.Blackboard["repeatedFalls"] = repeatedFallsDetected;
         behaviorTree.Blackboard["newHeight"] = newHeightDetected;
+        behaviorTree.Blackboard["isFrustrated"] = isFrustrated;
+
+        Debug.Log($"Blackboard - BigFall: {bigFallDetected}, RepeatedFalls: {repeatedFallsDetected}, NewHeight: {newHeightDetected}, Frustrated: {isFrustrated}");
     }
 
     void PlayBigFallAudio()
     {
+        Debug.Log("Playing Big Fall Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.bigFallLowFrustration,
             narratorManager.bigFallMediumFrustration,
             narratorManager.bigFallHighFrustration,
             playerRageEvents.FrustrationLevel
         );
+        playerRageEvents.ResetBigFallEvent();
         behaviorTree.Blackboard["bigFall"] = false;
     }
 
     void PlayRepeatedFallAudio()
     {
+        Debug.Log("Playing Repeated Fall Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.repeatedFallLowFrustration,
             narratorManager.repeatedFallMediumFrustration,
@@ -75,6 +84,7 @@ public class NarratorBehaviorTree : MonoBehaviour
 
     void PlayNewHeightAudio()
     {
+        Debug.Log("Playing New Height Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.newHeightLowFrustration,
             narratorManager.newHeightMediumFrustration,
@@ -88,6 +98,7 @@ public class NarratorBehaviorTree : MonoBehaviour
 
     void OnDestroy()
     {
-        behaviorTree.Stop();
+        if (behaviorTree != null)
+            behaviorTree.Stop();
     }
 }
