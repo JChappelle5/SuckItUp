@@ -28,76 +28,77 @@ public class PlungerMovement : MonoBehaviour
     public bool TimerOn = false;
     public float stickTime;
     public bool isCurrentlyGrounded;
-    
+    public GameObject tilemap;
+
 
     void Awake()
     {
-        Application.targetFrameRate = 240;
         stickTime = 3f;
         rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        isCurrentlyGrounded = IsGrounded();
-        checkOnFloor();
+        if(!PauseMenu.isPaused) // Check if game is paused
+        {
+            isCurrentlyGrounded = IsGrounded();
+            checkOnFloor();
 
-        // Debug print when grounded state changes
-        if (isCurrentlyGrounded && !wasGrounded)
-        {
-            regularSpeedMotion();
-            Debug.Log("Player is grounded.");
-        }
-        else if (!isCurrentlyGrounded && wasGrounded)
-        {
-            slowSpeedMotion();
-            Debug.Log("Player is airborne.");
-        }
-        wasGrounded = isCurrentlyGrounded;
-
-        if(!isCharging && !isStickingToWall && wasGrounded)
-        {
-            storedLeanAngle = 0f;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
-        }
-
-        if(isCurrentlyGrounded && !isRotatedOnWall())
-        {
-            TimerOn = false;
-            stickTime = 3f;
-        }
-
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && !isCharging) // Reset if not charging
-        {
-            storedLeanAngle = 0f;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
-        }
-
-        if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity == Vector2.zero) && isCharging) // Release to launch
-        {
-            Debug.Log("Space was released.");
-            Launch();
-        }
-
-        if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
-        {
-            StickToWall(); // Stick if pressing Space while on the wall
-        }
-
-        if (TimerOn && isStickingToWall)
-        {
-            if (stickTime > 0)
+            // Debug print when grounded state changes
+            if (isCurrentlyGrounded && !wasGrounded)
             {
-                stickTime -= Time.deltaTime;
+                regularSpeedMotion();
+                //Debug.Log("Player is grounded.");
             }
-            else
+            else if (!isCurrentlyGrounded && wasGrounded)
             {
-                unstickPlayer();
+                slowSpeedMotion();
+                //Debug.Log("Player is airborne.");
+            }
+            wasGrounded = isCurrentlyGrounded;
+
+            if(!isCharging && !isStickingToWall && wasGrounded)
+            {
+                storedLeanAngle = 0f;
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+            }
+
+            if(isCurrentlyGrounded && !isRotatedOnWall())
+            {
                 TimerOn = false;
                 stickTime = 3f;
             }
-        }
 
+            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
+            {
+                storedLeanAngle = 0f;
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
+            }
+
+            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
+            {
+                Launch();
+            }
+
+            if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
+            {
+                StickToWall(); // Stick if pressing Space while on the wall
+            }
+
+            if (TimerOn && isStickingToWall)
+            {
+                if (stickTime > 0)
+                {
+                    stickTime -= Time.deltaTime;
+                }
+                else
+                {
+                    unstickPlayer();
+                    TimerOn = false;
+                    stickTime = 3f;
+                }
+            }
+        }
     }
 
     void FixedUpdate()
@@ -115,13 +116,19 @@ public class PlungerMovement : MonoBehaviour
 
     void HandleCharging()
     {
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
         rb.linearVelocity = Vector2.zero;
         float input = -Input.GetAxisRaw("Horizontal");
 
         if (input != 0)
         {
+            if(!isCharging)
+            {
+                storedLeanAngle = 0f;
+            }
+
             isCharging = true;
-            storedLeanAngle += input * rotationSpeed * Time.deltaTime;
+            storedLeanAngle += input * rotationSpeed * Time.fixedDeltaTime;
             storedLeanAngle = Mathf.Clamp(storedLeanAngle, -maxPullBack, maxPullBack);
 
             float lowCharge = maxPullBack * 0.33f;
@@ -170,19 +177,25 @@ public class PlungerMovement : MonoBehaviour
     void Launch()
     {
         if (!isCharging) return;
+
+        if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
+        {
+            isStickingToWall = true;  // Force stick state if we're actually on wall
+        }
+
+        Debug.Log($"Launch - Charge: {storedLeanAngle}, IsSticking: {isStickingToWall}, Rotation: {rb.rotation}");
+
         this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
 
         float chargePercent = Mathf.Abs(storedLeanAngle) / maxPullBack;
         float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, chargePercent);
-
         float input = -Input.GetAxisRaw("Horizontal");
-
         float angleRad = storedLeanAngle * Mathf.Deg2Rad;
+
         Vector2 launchDirection = new Vector2(Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
         Vector2 upWallLaunchDir, downWallLaunchDir;
 
         rb.gravityScale = 10; // Reset gravity
-        Debug.Log("Gravity Reset");
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
         rb.linearVelocity = Vector2.zero; // Reset velocity
         
@@ -190,16 +203,18 @@ public class PlungerMovement : MonoBehaviour
         {
             float rotation = rb.rotation % 360;
 
+            Debug.Log($"Wall Launch - Rotation: {rotation}, Input: {input}, LaunchForce: {launchForce}");
+
             if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
             {
                 upWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
 
-                if(storedLeanAngle < 0) // facing upwards
+                if(input < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(storedLeanAngle > 0)
+                else if(input > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
@@ -209,11 +224,11 @@ public class PlungerMovement : MonoBehaviour
                 upWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
 
-                if(storedLeanAngle < 0) // facing upwards
+                if(input < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(storedLeanAngle > 0)
+                else if(input > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
@@ -227,7 +242,6 @@ public class PlungerMovement : MonoBehaviour
         // Reset
         isCharging = false;
         isStickingToWall = false;
-        Debug.Log("isStickingToWall = false (Launch)");
         storedLeanAngle = 0f;
     }
 
@@ -242,7 +256,7 @@ public class PlungerMovement : MonoBehaviour
     bool isRotatedOnWall()
     {
         float rotation = rb.rotation % 360;
-        return ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120) || (rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300));
+        return ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105) || (rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285));
     }
 
     //  Wall Detection Using OnCollisionEnter2D
@@ -270,7 +284,7 @@ public class PlungerMovement : MonoBehaviour
             // Checks if player is touching/rotated on wall
             if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
             {
-                if (Input.GetKey(KeyCode.Space)) // if holding space stick to wall
+                if (Input.GetKey(KeyCode.Space) && !isStickingToWall) // if holding space stick to wall
                 {
                     StickToWall();
                 }
@@ -293,19 +307,31 @@ public class PlungerMovement : MonoBehaviour
     {
         isStickingToWall = true;
         float rotation = rb.rotation % 360;
-        if((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+
+        if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
         {
             rb.rotation = 270;
         }
-        else if((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
+        else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
         {
             rb.rotation = 90;
         }
+    
         rb.linearVelocity = Vector2.zero; // Set velocity to 0
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
-        rb.constraints = RigidbodyConstraints2D.FreezePosition; // Freeze position
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY; // Freeze position
         TimerOn = true;
         stickTime = 3f;
+    }
+
+    private void checkOnFloor()
+    {
+        float rotation = rb.rotation % 360;
+        if(((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity.magnitude < 0.01f) // on ground
+        {
+            rb.rotation = 0;
+            rb.angularVelocity = 0;
+        }
     }
     
     //Resets time to regular
@@ -322,15 +348,6 @@ public class PlungerMovement : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
-    private void checkOnFloor()
-    {
-        float rotation = rb.rotation % 360;
-        if(((rotation > -30 && rotation < 30) || (rotation > 330 && rotation < 360) || (rotation > -360 && rotation < -330)) && isCurrentlyGrounded) // on ground
-        {
-            rb.rotation = 0;
-        }
-    }
-
     private void unstickPlayer()
     {
         isStickingToWall = false;
@@ -342,25 +359,23 @@ public class PlungerMovement : MonoBehaviour
         Vector2 pushDir = Vector2.zero;
         float rotation = rb.rotation % 360;
 
-        if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+        if ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
         {
             pushDir = new Vector2(-2f, -0.1f).normalized;
         }
-        else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
+        else if ((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
         {
             pushDir = new Vector2(2f, -0.1f).normalized;
         }
 
-        rb.AddForce(pushDir * 2f, ForceMode2D.Impulse);
-
         // Start Coroutine to temporarily disable sticking
         StartCoroutine(TemporarilyDisableStickable());
+
+        rb.AddForce(pushDir * 2f, ForceMode2D.Impulse);
     }
 
     private IEnumerator TemporarilyDisableStickable()
     {
-        GameObject tilemap = GameObject.Find("Tilemap"); // Gets tilemap object
-
         if (tilemap != null)
         {
             tilemap.layer = LayerMask.NameToLayer("Default"); // Change to non-stickable
