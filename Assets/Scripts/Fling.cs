@@ -205,30 +205,30 @@ public class PlungerMovement : MonoBehaviour
 
             Debug.Log($"Wall Launch - Rotation: {rotation}, Input: {input}, LaunchForce: {launchForce}");
 
-            if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
+            if((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
             {
                 upWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
 
-                if(input < 0) // facing upwards
+                if(storedLeanAngle < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(input > 0)
+                else if(storedLeanAngle > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
             }
-            else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
+            else if((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
             {
                 upWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
 
-                if(input < 0) // facing upwards
+                if(storedLeanAngle < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(input > 0)
+                else if(storedLeanAngle > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
@@ -256,7 +256,7 @@ public class PlungerMovement : MonoBehaviour
     bool isRotatedOnWall()
     {
         float rotation = rb.rotation % 360;
-        return ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105) || (rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285));
+        return ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120) || (rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300));
     }
 
     //  Wall Detection Using OnCollisionEnter2D
@@ -308,11 +308,11 @@ public class PlungerMovement : MonoBehaviour
         isStickingToWall = true;
         float rotation = rb.rotation % 360;
 
-        if((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
+        if((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
         {
             rb.rotation = 270;
         }
-        else if((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
+        else if((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
         {
             rb.rotation = 90;
         }
@@ -359,11 +359,11 @@ public class PlungerMovement : MonoBehaviour
         Vector2 pushDir = Vector2.zero;
         float rotation = rb.rotation % 360;
 
-        if ((rotation > 255 && rotation < 285) || (rotation < -75 && rotation > -105)) // on right wall
+        if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
         {
             pushDir = new Vector2(-2f, -0.1f).normalized;
         }
-        else if ((rotation > 75 && rotation < 105) || (rotation < -255 && rotation > -285)) // on left wall
+        else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
         {
             pushDir = new Vector2(2f, -0.1f).normalized;
         }
