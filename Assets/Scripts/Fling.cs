@@ -18,13 +18,16 @@ public class PlungerMovement : MonoBehaviour
     private float storedLeanAngle = 0f;
     public float normalFactor = 1f;
     public float slowdownFactor = 0.7f;
-    public Sprite PlayerStanding; 
+    public Sprite PlayerStanding;
+    public Sprite PlayerSticking;
     public Sprite PlayerLeft1;
     public Sprite PlayerLeft2;
     public Sprite PlayerLeft3;
+    public Sprite PlayerLeft4;
     public Sprite PlayerRight1;
     public Sprite PlayerRight2;
     public Sprite PlayerRight3;
+    public Sprite PlayerRight4;
     public bool TimerOn = false;
     public float stickTime;
     public bool isCurrentlyGrounded;
@@ -39,7 +42,7 @@ public class PlungerMovement : MonoBehaviour
 
     void Update()
     {
-        if(!PauseMenu.isPaused) // Check if game is paused
+        if (!PauseMenu.isPaused) // Check if game is paused
         {
             isCurrentlyGrounded = IsGrounded();
             checkOnFloor();
@@ -57,25 +60,25 @@ public class PlungerMovement : MonoBehaviour
             }
             wasGrounded = isCurrentlyGrounded;
 
-            if(!isCharging && !isStickingToWall && wasGrounded)
+            if (!isCharging && !isStickingToWall && wasGrounded)
             {
                 storedLeanAngle = 0f;
                 this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
             }
 
-            if(isCurrentlyGrounded && !isRotatedOnWall())
+            if (isCurrentlyGrounded && !isRotatedOnWall())
             {
                 TimerOn = false;
                 stickTime = 3f;
             }
 
-            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
+            if (Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && !isCharging) // Reset if not charging
             {
                 storedLeanAngle = 0f;
                 this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerStanding;
             }
 
-            if(Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
+            if (Input.GetKeyUp(KeyCode.Space) && (rb.linearVelocity.magnitude < 0.01f) && isCharging) // Release to launch
             {
                 Launch();
             }
@@ -83,6 +86,7 @@ public class PlungerMovement : MonoBehaviour
             if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
             {
                 StickToWall(); // Stick if pressing Space while on the wall
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerSticking;
             }
 
             if (TimerOn && isStickingToWall)
@@ -122,7 +126,7 @@ public class PlungerMovement : MonoBehaviour
 
         if (input != 0)
         {
-            if(!isCharging)
+            if (!isCharging)
             {
                 storedLeanAngle = 0f;
             }
@@ -134,8 +138,12 @@ public class PlungerMovement : MonoBehaviour
             float lowCharge = maxPullBack * 0.33f;
             float medCharge = maxPullBack * 0.66f;
 
-            if (storedLeanAngle > medCharge)
+            if (storedLeanAngle == maxPullBack)
             { //Max right charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight4;
+            }
+            else if (storedLeanAngle > medCharge)
+            { //Large right charge
                 this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight3;
             }
             else if (storedLeanAngle > lowCharge)
@@ -146,8 +154,12 @@ public class PlungerMovement : MonoBehaviour
             { //Low right charge
                 this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerRight1;
             }
-            else if (storedLeanAngle < -medCharge)
+            else if (storedLeanAngle == -maxPullBack)
             { //Max left charge
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft4;
+            }
+            else if (storedLeanAngle < -medCharge)
+            { //Large left charge
                 this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerLeft3;
             }
             else if (storedLeanAngle < -lowCharge)
@@ -198,37 +210,37 @@ public class PlungerMovement : MonoBehaviour
         rb.gravityScale = 10; // Reset gravity
         rb.constraints = RigidbodyConstraints2D.None; // Unfreeze movement
         rb.linearVelocity = Vector2.zero; // Reset velocity
-        
-        if(isStickingToWall)
+
+        if (isStickingToWall)
         {
             float rotation = rb.rotation % 360;
 
             Debug.Log($"Wall Launch - Rotation: {rotation}, Input: {input}, LaunchForce: {launchForce}");
 
-            if((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+            if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
             {
                 upWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
 
-                if(storedLeanAngle < 0) // facing upwards
+                if (storedLeanAngle < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(storedLeanAngle > 0)
+                else if (storedLeanAngle > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
             }
-            else if((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
+            else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
             {
                 upWallLaunchDir = new Vector2(Mathf.Sin(angleRad), -Mathf.Cos(angleRad)).normalized;
                 downWallLaunchDir = new Vector2(-Mathf.Sin(angleRad), Mathf.Cos(angleRad)).normalized;
 
-                if(storedLeanAngle < 0) // facing upwards
+                if (storedLeanAngle < 0) // facing upwards
                 {
                     rb.AddForce(upWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
-                else if(storedLeanAngle > 0)
+                else if (storedLeanAngle > 0)
                 {
                     rb.AddForce(downWallLaunchDir * launchForce, ForceMode2D.Impulse);
                 }
@@ -308,15 +320,15 @@ public class PlungerMovement : MonoBehaviour
         isStickingToWall = true;
         float rotation = rb.rotation % 360;
 
-        if((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+        if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
         {
             rb.rotation = 270;
         }
-        else if((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
+        else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
         {
             rb.rotation = 90;
         }
-    
+
         rb.linearVelocity = Vector2.zero; // Set velocity to 0
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY; // Freeze position
@@ -327,13 +339,13 @@ public class PlungerMovement : MonoBehaviour
     private void checkOnFloor()
     {
         float rotation = rb.rotation % 360;
-        if(((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity.magnitude < 0.01f) // on ground
+        if (((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && isCurrentlyGrounded && rb.linearVelocity.magnitude < 0.01f) // on ground
         {
             rb.rotation = 0;
             rb.angularVelocity = 0;
         }
     }
-    
+
     //Resets time to regular
     private void regularSpeedMotion()
     {

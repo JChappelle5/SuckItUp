@@ -7716,6 +7716,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 060844e8e95cf3048a76b92236f16107, type: 3}
   - {fileID: 8300000, guid: b13cbdef9c6d51f45a9348cfe0a8b182, type: 3}
   - {fileID: 8300000, guid: 652e6175ca080b84bba37c801438c542, type: 3}
+  frustratedClips: []
 --- !u!82 &543107574
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7857,13 +7858,16 @@ MonoBehaviour:
   wallCheckRadius: 0.1
   normalFactor: 1
   slowdownFactor: 0.7
-  PlayerStanding: {fileID: -4294733378064968425, guid: 4565ad94439b8544484702c620092c84, type: 3}
-  PlayerLeft1: {fileID: -4018307493478988608, guid: 204da09daf2f3094ca5d12f4da8817d1, type: 3}
-  PlayerLeft2: {fileID: -7663185950524969196, guid: 19236cf3e288d7c478a95db84db6fc56, type: 3}
-  PlayerLeft3: {fileID: 3500303540297668169, guid: 9d16cdbb72dec7046a94b54032b2ee58, type: 3}
-  PlayerRight1: {fileID: -1924765436334174199, guid: 3d92b208f16d9484f8ea9b66277403d6, type: 3}
-  PlayerRight2: {fileID: 5030297396088769931, guid: 0a381a1ab9d23a048aabe227beb36cc0, type: 3}
-  PlayerRight3: {fileID: -5348201463422556789, guid: 1d7c8ad53eee6624c87404ba93c91a69, type: 3}
+  PlayerStanding: {fileID: 3330566885566759747, guid: 7c935046986d5054088150ab9e122958, type: 3}
+  PlayerSticking: {fileID: 2157226259136801963, guid: 98723a54f514b484e87632545668fb32, type: 3}
+  PlayerLeft1: {fileID: -5438779093752809515, guid: f02861e383c48f84e88b37dc109e4b63, type: 3}
+  PlayerLeft2: {fileID: -3393648164146370901, guid: d208b8cb8a31f044c8b9c4722248a77c, type: 3}
+  PlayerLeft3: {fileID: 7126796114165144708, guid: 317681afec2e67a45a088eb0061c2229, type: 3}
+  PlayerLeft4: {fileID: 2151602328687160475, guid: 2c488c7cda37e4a4b95c013914fd94e7, type: 3}
+  PlayerRight1: {fileID: -7917115170154717095, guid: 58a8987976c99364e8d553776845c60c, type: 3}
+  PlayerRight2: {fileID: -3869501247770545595, guid: ceebe50d49b014a418821ebc0a4c7534, type: 3}
+  PlayerRight3: {fileID: 1123913778507466908, guid: df3228828658a004b80d5e6103223247, type: 3}
+  PlayerRight4: {fileID: 3814857771828522868, guid: 1617cd1144b550c45bf1c64beabfa3cb, type: 3}
   TimerOn: 0
   stickTime: 0
   isCurrentlyGrounded: 0
@@ -44604,11 +44608,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.91
+      value: -21.908
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.365
+      value: -4.32
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -44804,7 +44808,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -4294733378064968425, guid: 4565ad94439b8544484702c620092c84, type: 3}
+  m_Sprite: {fileID: 3330566885566759747, guid: 7c935046986d5054088150ab9e122958, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
