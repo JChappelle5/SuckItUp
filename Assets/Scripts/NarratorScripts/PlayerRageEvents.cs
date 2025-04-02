@@ -12,10 +12,14 @@ public class PlayerRageEvents : MonoBehaviour
     public float UnityUnitsPerMeter => unityUnitsPerMeter;
 
     [Header("Thresholds (Game Meters)")]
-    public float bigFallThreshold = 0.7f;       // ~3.66 Unity units
-    public float heightCheckpointInterval = 0.5f; // ~2.62 Unity units
+    public float bigFallThreshold = 0.7f;
+    public float heightCheckpointInterval = 0.5f;
     public int repeatFallThreshold = 2;
-    public float minFallDistanceForRepeat = 0.3f; // ~1.57 Unity units
+    public float minFallDistanceForRepeat = 0.3f;
+    public float significantProgressThreshold = 10f;  // 10 meters for "back to start" penalty
+
+    [Header("Stuck Timer Settings")]
+    public float stuckTimeThreshold = 30f;
 
     private bool isFalling = false;
     private bool hasLanded = true;
@@ -26,18 +30,35 @@ public class PlayerRageEvents : MonoBehaviour
     private float lastFallHeight = -9999f;
     private int consecutiveFallCount = 0;
 
-    private float frustrationLevel = 0f;
+    private float frustrationLevel = 6f;
 
-    // Big fall event flag
     private bool bigFallEvent = false;
+    private bool repeatedFallEvent = false;
+    private bool newHeightEvent = false;
+
+    private float stuckTimer = 0f;
+
+    private float initialStartHeight;
+    private bool significantProgressMade = false;
+    private float highestHeightReached;
+
+    private bool returnedToStartThisFall = false;
+
     public bool BigFallEvent => bigFallEvent;
-    public void ResetBigFallEvent() { bigFallEvent = false; }
+    public bool RepeatedFallEvent => repeatedFallEvent;
+    public bool NewHeightEvent => newHeightEvent;
+
+    public void ResetBigFallEvent() => bigFallEvent = false;
+    public void ResetRepeatedFallEvent() => repeatedFallEvent = false;
+    public void ResetNewHeightEvent() => newHeightEvent = false;
 
     void Start()
     {
         highestPointBeforeFall = heightTracker.playerRb.position.y;
         lastHeightCheckpoint = heightTracker.playerRb.position.y;
-        frustrationLevel = 6f; // Start at moderate frustration
+        initialStartHeight = heightTracker.playerRb.position.y;
+        highestHeightReached = initialStartHeight;
+        frustrationLevel = 6f;
     }
 
     void Update()
@@ -45,29 +66,35 @@ public class PlayerRageEvents : MonoBehaviour
         float currentHeight = heightTracker.playerRb.position.y;
         float verticalVelocity = heightTracker.playerRb.linearVelocity.y;
 
-        // Start falling
         if (!isFalling && hasLanded && verticalVelocity < -velocityThreshold)
         {
             isFalling = true;
             hasLanded = false;
             highestPointBeforeFall = currentHeight;
-            Debug.Log($"Started falling from height: {highestPointBeforeFall}");
+            returnedToStartThisFall = false;  // Reset clearly at new fall
         }
 
-        // Landing detection
         if (isFalling && !hasLanded && Mathf.Abs(verticalVelocity) < velocityThreshold)
         {
             isFalling = false;
             hasLanded = true;
 
             float fallDistanceMeters = (highestPointBeforeFall - currentHeight) / unityUnitsPerMeter;
-            Debug.Log($"Landed. Fall Distance: {fallDistanceMeters:F2} meters");
 
-            if (fallDistanceMeters >= bigFallThreshold)
+            // Check falling back to beginning clearly first
+            if (significantProgressMade && currentHeight <= initialStartHeight + 0.1f)
             {
-                IncreaseFrustration(1f);
+                IncreaseFrustration(2f, "Fell all the way back to the beginning after significant progress");
+                significantProgressMade = false;
+                highestHeightReached = initialStartHeight;
+                returnedToStartThisFall = true;
+            }
+
+            // Only trigger big fall if didn't just return to start
+            if (!returnedToStartThisFall && fallDistanceMeters >= bigFallThreshold)
+            {
+                IncreaseFrustration(1f, "Big fall detected");
                 bigFallEvent = true;
-                Debug.Log("Big Fall detected!");
             }
 
             if (fallDistanceMeters >= minFallDistanceForRepeat)
@@ -75,55 +102,86 @@ public class PlayerRageEvents : MonoBehaviour
                 if (Mathf.Abs(currentHeight - lastFallHeight) < 0.1f)
                 {
                     consecutiveFallCount++;
-                    Debug.Log($"Repeated Fall Count: {consecutiveFallCount}");
                     if (consecutiveFallCount >= repeatFallThreshold)
                     {
-                        IncreaseFrustration(2f);
-                        Debug.Log("Repeated Falls threshold reached!");
+                        IncreaseFrustration(2f, "Repeated falls at the same height");
+                        repeatedFallEvent = true;
                     }
                 }
                 else
                 {
                     lastFallHeight = currentHeight;
                     consecutiveFallCount = 1;
-                    Debug.Log("Repeated Falls count reset.");
                 }
+            }
+
+            float heightCheckpointMeters = (currentHeight - lastHeightCheckpoint) / unityUnitsPerMeter;
+            if (heightCheckpointMeters >= heightCheckpointInterval)
+            {
+                newHeightEvent = true;
             }
         }
 
-        // New Height Checkpoint (update not done here)
-        float heightCheckpointMeters = (currentHeight - lastHeightCheckpoint) / unityUnitsPerMeter;
-        if (heightCheckpointMeters >= heightCheckpointInterval)
+        // Stuck detection logic
+        float distanceFromLastCheckpoint = Mathf.Abs(currentHeight - lastHeightCheckpoint);
+        if (distanceFromLastCheckpoint < 0.1f)
         {
-            Debug.Log($"New Height condition met at: {currentHeight}");
+            stuckTimer += Time.deltaTime;
+
+            if (stuckTimer >= stuckTimeThreshold)
+            {
+                IncreaseFrustration(1f, "Stuck at the same height for too long");
+                stuckTimer = 0f;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+
+        // Track highest height reached clearly
+        if (currentHeight > highestHeightReached)
+            highestHeightReached = currentHeight;
+
+        if (!significantProgressMade &&
+            (highestHeightReached - initialStartHeight) / unityUnitsPerMeter >= significantProgressThreshold)
+        {
+            significantProgressMade = true;
+            Debug.Log("Significant progress achieved!");
         }
 
         if (currentHeight > highestPointBeforeFall)
             highestPointBeforeFall = currentHeight;
     }
 
-    // Expose whether the player is landed
     public bool IsLanded => hasLanded;
 
-    // Called from the Behavior Tree when new height audio plays
     public void UpdateLastHeightCheckpoint()
     {
         lastHeightCheckpoint = CurrentHeight;
-        Debug.Log($"Height checkpoint explicitly updated to: {lastHeightCheckpoint}");
+        ResetNewHeightEvent();
+        stuckTimer = 0f;
+
+        // Decrease frustration on achieving a new height
+        DecreaseFrustration(1f, "Achieved a new height");
+        Debug.Log($"Checkpoint updated at height: {lastHeightCheckpoint}");
     }
 
-    public void IncreaseFrustration(float amount)
+    public void IncreaseFrustration(float amount, string reason)
     {
-        frustrationLevel += amount;
-        frustrationLevel = Mathf.Clamp(frustrationLevel, 1f, 10f);
-        Debug.Log($"Frustration increased to {frustrationLevel}");
+        frustrationLevel = Mathf.Clamp(frustrationLevel + amount, 1f, 10f);
+        Debug.Log($"Frustration increased by {amount}. Reason: {reason}. Current Level: {frustrationLevel}");
+    }
+
+    public void DecreaseFrustration(float amount, string reason)
+    {
+        frustrationLevel = Mathf.Clamp(frustrationLevel - amount, 1f, 10f);
+        Debug.Log($"Frustration decreased by {amount}. Reason: {reason}. Current Level: {frustrationLevel}");
     }
 
     public void DecreaseFrustration(float amount)
     {
-        frustrationLevel -= amount;
-        frustrationLevel = Mathf.Clamp(frustrationLevel, 1f, 10f);
-        Debug.Log($"Frustration decreased to {frustrationLevel}");
+        DecreaseFrustration(amount, "Achieved new height or narrator provided encouragement");
     }
 
     public float HighestPointBeforeFall => highestPointBeforeFall;

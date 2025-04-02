@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class NarratorManager : MonoBehaviour
 {
@@ -20,8 +21,8 @@ public class NarratorManager : MonoBehaviour
     public AudioClip[] newHeightMediumFrustration;
     public AudioClip[] newHeightHighFrustration;
 
-    [Header("Frustration Clips (optional)")]
-    public AudioClip[] frustratedClips;
+    // Track previously played clips to avoid repetition
+    private Dictionary<AudioClip[], List<AudioClip>> clipHistory = new Dictionary<AudioClip[], List<AudioClip>>();
 
     public bool isPlayingAudio => audioSource.isPlaying;
 
@@ -29,22 +30,32 @@ public class NarratorManager : MonoBehaviour
     {
         if (clips.Length == 0) return;
 
-        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        // Initialize clip history if not yet done
+        if (!clipHistory.ContainsKey(clips) || clipHistory[clips].Count == 0)
+        {
+            clipHistory[clips] = new List<AudioClip>(clips);
+        }
+
+        // Select a clip randomly from available history
+        List<AudioClip> availableClips = clipHistory[clips];
+        int randomIndex = Random.Range(0, availableClips.Count);
+        AudioClip clip = availableClips[randomIndex];
+
+        // Play selected clip
         audioSource.clip = clip;
         audioSource.Play();
+
+        // Remove clip from history to prevent immediate repetition
+        availableClips.RemoveAt(randomIndex);
     }
 
     public void PlayClipBasedOnFrustration(AudioClip[] low, AudioClip[] medium, AudioClip[] high, float frustration)
     {
-        AudioClip[] selectedClips;
-
         if (frustration <= 3)
-            selectedClips = low;
+            PlayRandomClip(low);
         else if (frustration <= 8)
-            selectedClips = medium;
+            PlayRandomClip(medium);
         else
-            selectedClips = high;
-
-        PlayRandomClip(selectedClips);
+            PlayRandomClip(high);
     }
 }

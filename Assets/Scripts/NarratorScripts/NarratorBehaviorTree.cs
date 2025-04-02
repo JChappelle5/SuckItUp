@@ -35,31 +35,13 @@ public class NarratorBehaviorTree : MonoBehaviour
 
     void UpdateBlackboard()
     {
-        bool bigFallDetected =
-            ((playerRageEvents.HighestPointBeforeFall - playerRageEvents.CurrentHeight) / playerRageEvents.UnityUnitsPerMeter)
-            >= playerRageEvents.bigFallThreshold;
-
-        bool repeatedFallsDetected =
-            playerRageEvents.ConsecutiveFallCount >= playerRageEvents.repeatFallThreshold;
-
-        // Only trigger new height when player is landed
-        bool newHeightDetected = playerRageEvents.IsLanded &&
-            ((playerRageEvents.CurrentHeight - playerRageEvents.LastHeightCheckpoint) / playerRageEvents.UnityUnitsPerMeter)
-            >= playerRageEvents.heightCheckpointInterval;
-
-        bool isFrustrated = playerRageEvents.FrustrationLevel >= frustrationThreshold;
-
-        behaviorTree.Blackboard["bigFall"] = bigFallDetected;
-        behaviorTree.Blackboard["repeatedFalls"] = repeatedFallsDetected;
-        behaviorTree.Blackboard["newHeight"] = newHeightDetected;
-        behaviorTree.Blackboard["isFrustrated"] = isFrustrated;
-
-        Debug.Log($"Blackboard - BigFall: {bigFallDetected}, RepeatedFalls: {repeatedFallsDetected}, NewHeight: {newHeightDetected}, Frustrated: {isFrustrated}");
+        behaviorTree.Blackboard["bigFall"] = playerRageEvents.BigFallEvent;
+        behaviorTree.Blackboard["repeatedFalls"] = playerRageEvents.RepeatedFallEvent;
+        behaviorTree.Blackboard["newHeight"] = playerRageEvents.NewHeightEvent; // <-- Directly use the new height event flag
     }
 
     void PlayBigFallAudio()
     {
-        Debug.Log("Playing Big Fall Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.bigFallLowFrustration,
             narratorManager.bigFallMediumFrustration,
@@ -72,19 +54,18 @@ public class NarratorBehaviorTree : MonoBehaviour
 
     void PlayRepeatedFallAudio()
     {
-        Debug.Log("Playing Repeated Fall Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.repeatedFallLowFrustration,
             narratorManager.repeatedFallMediumFrustration,
             narratorManager.repeatedFallHighFrustration,
             playerRageEvents.FrustrationLevel
         );
+        playerRageEvents.ResetRepeatedFallEvent();
         behaviorTree.Blackboard["repeatedFalls"] = false;
     }
 
     void PlayNewHeightAudio()
     {
-        Debug.Log("Playing New Height Audio!");
         narratorManager.PlayClipBasedOnFrustration(
             narratorManager.newHeightLowFrustration,
             narratorManager.newHeightMediumFrustration,
@@ -92,8 +73,8 @@ public class NarratorBehaviorTree : MonoBehaviour
             playerRageEvents.FrustrationLevel
         );
         playerRageEvents.UpdateLastHeightCheckpoint();
-        behaviorTree.Blackboard["newHeight"] = false;
         playerRageEvents.DecreaseFrustration(1f);
+        behaviorTree.Blackboard["newHeight"] = false;
     }
 
     void OnDestroy()
