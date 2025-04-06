@@ -93,7 +93,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
         else{
             //If angel mechanic didn't occur, the current fall will be added to the cumulative fall 
-            cumulFallChance += (float) ((currFall * currFall) * 0.01);
+            cumulFallChance += (float) ((currFall * currFall) * 0.04);
             if(cumulFallChance > 12){ //Caps the chance to 12
                 cumulFallChance = 12;
             }
