@@ -3,102 +3,77 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerRageEvents : MonoBehaviour
 {
-    [Header("Core Configuration")]
-    [Tooltip("Conversion rate from Unity units to in-game meters.")]
-    public float unityUnitsPerMeter = 5.235f;
+    [Header("References")]
+    public NarratorManager narratorManager;
+    public HeightTracker heightTracker;
 
-    [Header("Repeated Fall Settings")]
+    [Header("Unit Conversion")]
+    [SerializeField] private float unityUnitsPerMeter = 5.235f;
+    public float UnityUnitsPerMeter => unityUnitsPerMeter;
+
+    [Header("Thresholds (Game Meters)")]
+    public float bigFallThreshold = 0.7f;
+    public float heightCheckpointInterval = 0.5f;
     public int repeatFallThreshold = 2;
     public float minFallDistanceForRepeat = 0.3f;
+    public float significantProgressThreshold = 10f;  // 10 meters for "back to start" penalty
 
-    [Header("Progress / Start Settings")]
-    public float significantProgressThreshold = 10f;
-
-    [Header("Stuck Detection")]
+    [Header("Stuck Timer Settings")]
     public float stuckTimeThreshold = 30f;
 
-    [Header("New Height Settings")]
-    [Tooltip("Minimum meters needed to trigger a 'newHeightEvent' at all.")]
-    public float baseHeightCheckpointInterval = 1.5f;
-    // Tiered thresholds for awarding frustration relief on new height
-    private float smallClimbThreshold = 1.5f;
-    private float mediumClimbThreshold = 3f;
-    private float bigClimbThreshold = 5f;
-
-    // Frustration: 1..10; start high for beginners (8 gives supportive clips)
-    private float frustrationLevel = 8f;
-    public float FrustrationLevel => frustrationLevel;
-
-    // Internal fall/landing state
     private bool isFalling = false;
     private bool hasLanded = true;
-    private bool significantProgressMade = false;
-    private bool returnedToStartThisFall = false;
-
     private float highestPointBeforeFall;
     private float lastHeightCheckpoint;
-    private float initialStartHeight;
-    private float highestHeightReached;
-
     private float velocityThreshold = 0.1f;
+
     private float lastFallHeight = -9999f;
     private int consecutiveFallCount = 0;
-    private float stuckTimer = 0f;
 
-    // Track consecutive successful climbs
-    private int consecutiveNewHeightCount = 0;
+    private float frustrationLevel = 6f;
 
-    // --- NEW: Timer for "No Falls" frustration relief ---
-    [Tooltip("How many seconds without falling before first frustration decrease.")]
-    public float initialNoFallWait = 30f; // starts at 30 sec
-    private float timeWithoutFall = 0f;
-    private float currentNoFallThreshold = 0f;
-
-    // Events for Behavior Tree
     private bool bigFallEvent = false;
     private bool repeatedFallEvent = false;
     private bool newHeightEvent = false;
+
+    private float stuckTimer = 0f;
+
+    private float initialStartHeight;
+    private bool significantProgressMade = false;
+    private float highestHeightReached;
+
+    private bool returnedToStartThisFall = false;
 
     public bool BigFallEvent => bigFallEvent;
     public bool RepeatedFallEvent => repeatedFallEvent;
     public bool NewHeightEvent => newHeightEvent;
 
-    // --- NEW: Skill test variables ---
-    // If the player climbs 3 game meters within the first minute, they are considered skilled.
-    private float startTime = 0f;
-    private bool skillTestPassed = false;
+    public void ResetBigFallEvent() => bigFallEvent = false;
+    public void ResetRepeatedFallEvent() => repeatedFallEvent = false;
+    public void ResetNewHeightEvent() => newHeightEvent = false;
 
     void Start()
     {
-        highestPointBeforeFall = transform.position.y;
-        lastHeightCheckpoint = transform.position.y;
-        initialStartHeight = transform.position.y;
+        highestPointBeforeFall = heightTracker.playerRb.position.y;
+        lastHeightCheckpoint = heightTracker.playerRb.position.y;
+        initialStartHeight = heightTracker.playerRb.position.y;
         highestHeightReached = initialStartHeight;
-        frustrationLevel = 8f;  // Start high for beginners
-
-        // Initialize no-fall timer
-        timeWithoutFall = 0f;
-        currentNoFallThreshold = initialNoFallWait; // 30 sec
-
-        // Record game start time for the skill test.
-        startTime = Time.time;
+        frustrationLevel = 6f;
     }
 
     void Update()
     {
-        float currentHeight = transform.position.y;
-        float verticalVelocity = GetComponent<Rigidbody2D>().linearVelocity.y;
+        float currentHeight = heightTracker.playerRb.position.y;
+        float verticalVelocity = heightTracker.playerRb.linearVelocity.y;
 
-        // 1) Detect start of a fall
         if (!isFalling && hasLanded && verticalVelocity < -velocityThreshold)
         {
             isFalling = true;
             hasLanded = false;
             highestPointBeforeFall = currentHeight;
-            returnedToStartThisFall = false;
+            returnedToStartThisFall = false;  // Reset clearly at new fall
         }
 
-        // 2) Detect landing
         if (isFalling && !hasLanded && Mathf.Abs(verticalVelocity) < velocityThreshold)
         {
             isFalling = false;
@@ -106,7 +81,7 @@ public class PlayerRageEvents : MonoBehaviour
 
             float fallDistanceMeters = (highestPointBeforeFall - currentHeight) / unityUnitsPerMeter;
 
-            // 2.1) If we made significant progress but fell all the way back
+            // Check falling back to beginning clearly first
             if (significantProgressMade && currentHeight <= initialStartHeight + 0.1f)
             {
                 IncreaseFrustration(2f, "Fell all the way back to the beginning after significant progress");
@@ -115,33 +90,13 @@ public class PlayerRageEvents : MonoBehaviour
                 returnedToStartThisFall = true;
             }
 
-            // 2.2) Tiered frustration for falls: >3m, >6m, >9m
-            bigFallEvent = false; // reset before setting it true
-            if (fallDistanceMeters > 9f)
+            // Only trigger big fall if didn't just return to start
+            if (!returnedToStartThisFall && fallDistanceMeters >= bigFallThreshold)
             {
-                IncreaseFrustration(3f, "Massive fall");
-                bigFallEvent = true;
-            }
-            else if (fallDistanceMeters > 6f)
-            {
-                IncreaseFrustration(2f, "Medium fall");
-                bigFallEvent = true;
-            }
-            else if (fallDistanceMeters > 3f)
-            {
-                IncreaseFrustration(1f, "Small fall");
+                IncreaseFrustration(1f, "Big fall detected");
                 bigFallEvent = true;
             }
 
-            // If any fall event occurred, reset the no-fall timer system and break the consecutive climb streak.
-            if (bigFallEvent)
-            {
-                consecutiveNewHeightCount = 0;
-                timeWithoutFall = 0f;
-                currentNoFallThreshold = initialNoFallWait;
-            }
-
-            // 2.3) Repeated falls
             if (fallDistanceMeters >= minFallDistanceForRepeat)
             {
                 if (Mathf.Abs(currentHeight - lastFallHeight) < 0.1f)
@@ -160,19 +115,19 @@ public class PlayerRageEvents : MonoBehaviour
                 }
             }
 
-            // 2.4) Check if we reached a new height using the dynamic threshold!
             float heightCheckpointMeters = (currentHeight - lastHeightCheckpoint) / unityUnitsPerMeter;
-            if (heightCheckpointMeters >= GetDynamicNewHeightThreshold())
+            if (heightCheckpointMeters >= heightCheckpointInterval)
             {
                 newHeightEvent = true;
             }
         }
 
-        // 3) Stuck detection
+        // Stuck detection logic
         float distanceFromLastCheckpoint = Mathf.Abs(currentHeight - lastHeightCheckpoint);
         if (distanceFromLastCheckpoint < 0.1f)
         {
             stuckTimer += Time.deltaTime;
+
             if (stuckTimer >= stuckTimeThreshold)
             {
                 IncreaseFrustration(1f, "Stuck at the same height for too long");
@@ -184,11 +139,10 @@ public class PlayerRageEvents : MonoBehaviour
             stuckTimer = 0f;
         }
 
-        // 4) Track highest point reached
+        // Track highest height reached clearly
         if (currentHeight > highestHeightReached)
             highestHeightReached = currentHeight;
 
-        // Significant progress check
         if (!significantProgressMade &&
             (highestHeightReached - initialStartHeight) / unityUnitsPerMeter >= significantProgressThreshold)
         {
@@ -196,64 +150,23 @@ public class PlayerRageEvents : MonoBehaviour
             Debug.Log("Significant progress achieved!");
         }
 
-        // Update highestPointBeforeFall if ascending again
         if (currentHeight > highestPointBeforeFall)
             highestPointBeforeFall = currentHeight;
-
-        // 5) Handle "No fall for X seconds" logic,
-        // but only if the player is actually moving enough (at least 3 game meters from the last checkpoint)
-        float heightDeltaGameMeters = distanceFromLastCheckpoint / unityUnitsPerMeter;
-        if (!bigFallEvent && heightDeltaGameMeters >= 3f)
-        {
-            timeWithoutFall += Time.deltaTime;
-            if (timeWithoutFall >= currentNoFallThreshold)
-            {
-                DecreaseFrustration(1f, $"No falls for {currentNoFallThreshold} seconds");
-                timeWithoutFall = 0f;
-                currentNoFallThreshold += 10f;
-            }
-        }
-
-        // 6) Skill test: if within the first minute the player climbs 3 game meters, mark as skilled.
-        if (!skillTestPassed && (Time.time - startTime) < 60f)
-        {
-            float progressFromStart = (highestHeightReached - initialStartHeight) / unityUnitsPerMeter;
-            if (progressFromStart >= 3f)
-            {
-                DecreaseFrustration(7f, "Skilled player: quick progress within 1 minute");
-                skillTestPassed = true;
-            }
-        }
     }
 
-    // -----------------------
-    // DYNAMIC THRESHOLDS
-    // -----------------------
-    // For falls: lower frustration means a smaller threshold so even modest falls trigger feedback.
-    // For new heights: We want a mapping such that:
-    //   Frustration 1  => 7 m threshold
-    //   Frustration 8  => 2.6 m threshold
-    private float GetDynamicBigFallThreshold()
+    public bool IsLanded => hasLanded;
+
+    public void UpdateLastHeightCheckpoint()
     {
-        float t = Mathf.InverseLerp(1f, 10f, frustrationLevel);
-        // Lerp multiplier from 0.5 (at low frustration) to 1.5 (at high frustration)
-        float multiplier = Mathf.Lerp(0.5f, 1.5f, t);
-        return 3f * multiplier; // baseBigFallThreshold = 3m
+        lastHeightCheckpoint = CurrentHeight;
+        ResetNewHeightEvent();
+        stuckTimer = 0f;
+
+        // Decrease frustration on achieving a new height
+        DecreaseFrustration(1f, "Achieved a new height");
+        Debug.Log($"Checkpoint updated at height: {lastHeightCheckpoint}");
     }
 
-    private float GetDynamicNewHeightThreshold()
-    {
-        // Clamp frustration to [1, 8] for this mapping.
-        float clampedFrustration = Mathf.Clamp(frustrationLevel, 1f, 8f);
-        // Normalize: when frustration=1, t=0; when frustration=8, t=1.
-        float t = (clampedFrustration - 1f) / 7f;
-        // Lerp from 7 m at t=0 to 2.6 m at t=1.
-        return Mathf.Lerp(7f, 2.6f, t);
-    }
-
-    // -----------------------
-    // FRUSTRATION LOGIC
-    // -----------------------
     public void IncreaseFrustration(float amount, string reason)
     {
         frustrationLevel = Mathf.Clamp(frustrationLevel + amount, 1f, 10f);
@@ -266,56 +179,14 @@ public class PlayerRageEvents : MonoBehaviour
         Debug.Log($"Frustration decreased by {amount}. Reason: {reason}. Current Level: {frustrationLevel}");
     }
 
-    // Overload for single-argument calls
     public void DecreaseFrustration(float amount)
     {
-        DecreaseFrustration(amount, "Achieved new height or encouragement");
+        DecreaseFrustration(amount, "Achieved new height or narrator provided encouragement");
     }
 
-    // -----------------------
-    // EVENT RESETTERS (for Behavior Tree)
-    // -----------------------
-    public void ResetBigFallEvent() => bigFallEvent = false;
-    public void ResetRepeatedFallEvent() => repeatedFallEvent = false;
-    public void ResetNewHeightEvent() => newHeightEvent = false;
-
-    // -----------------------
-    // CHECKPOINT UPDATE
-    // -----------------------
-    public void UpdateLastHeightCheckpoint()
-    {
-        float oldCheckpoint = lastHeightCheckpoint;
-        lastHeightCheckpoint = transform.position.y;
-        ResetNewHeightEvent();
-        stuckTimer = 0f;
-
-        float climbFromLastCheckpoint = (lastHeightCheckpoint - oldCheckpoint) / unityUnitsPerMeter;
-
-        // Tiered reward for new height based on the climb distance
-        if (climbFromLastCheckpoint > bigClimbThreshold)
-        {
-            DecreaseFrustration(2f, "Big climb above last checkpoint");
-        }
-        else if (climbFromLastCheckpoint > mediumClimbThreshold)
-        {
-            DecreaseFrustration(1f, "Medium climb above last checkpoint");
-        }
-        else if (climbFromLastCheckpoint > smallClimbThreshold)
-        {
-            DecreaseFrustration(0.5f, "Small climb above last checkpoint");
-        }
-
-        // Reward extra for consecutive successes
-        consecutiveNewHeightCount++;
-        if (consecutiveNewHeightCount >= 3)
-        {
-            DecreaseFrustration(1f, "Consecutive new heights in a row!");
-            consecutiveNewHeightCount = 0;
-        }
-
-        Debug.Log(
-            $"Checkpoint updated at {lastHeightCheckpoint} (climbed {climbFromLastCheckpoint:F2}m). " +
-            $"Consecutive new heights: {consecutiveNewHeightCount}. Frustration: {frustrationLevel}"
-        );
-    }
+    public float HighestPointBeforeFall => highestPointBeforeFall;
+    public float LastHeightCheckpoint => lastHeightCheckpoint;
+    public int ConsecutiveFallCount => consecutiveFallCount;
+    public float FrustrationLevel => frustrationLevel;
+    public float CurrentHeight => heightTracker.playerRb.position.y;
 }
