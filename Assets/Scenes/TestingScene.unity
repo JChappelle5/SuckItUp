@@ -46036,11 +46036,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< Updated upstream
       value: 16.04
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
       value: 127.18
+=======
+      value: -21.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.2
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -46274,15 +46282,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c2a168ccba3e97469f59ae027f8c761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  narratorManager: {fileID: 543107573}
-  heightTracker: {fileID: 581907708}
   unityUnitsPerMeter: 5.235
-  bigFallThreshold: 3.66
-  heightCheckpointInterval: 2.61
   repeatFallThreshold: 2
   minFallDistanceForRepeat: 1.57
   significantProgressThreshold: 10
   stuckTimeThreshold: 30
+<<<<<<< Updated upstream
+=======
+  baseHeightCheckpointInterval: 4.4
+  initialNoFallWait: 30
+>>>>>>> Stashed changes
 --- !u!50 &5174926721603753804 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
