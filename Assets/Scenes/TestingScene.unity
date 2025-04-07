@@ -31596,6 +31596,94 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &926528388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 926528390}
+  - component: {fileID: 926528389}
+  m_Layer: 0
+  m_Name: DrainSnake
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!212 &926528389
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926528388}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -1035512924054681516, guid: 46732cf276b64fd48b21c7beaf463890, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.22, y: 79.810005}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &926528390
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926528388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -29.6, y: 7.36, z: -0.04592829}
+  m_LocalScale: {x: 0.25155127, y: 0.25155127, z: 0.25155127}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1064916087}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1012529466
 GameObject:
   m_ObjectHideFlags: 0
@@ -31732,6 +31820,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1064916086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1064916087}
+  m_Layer: 0
+  m_Name: SnakeTip
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1064916087
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064916086}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.03, y: -38.35, z: -0.32126522}
+  m_LocalScale: {x: 3.9753327, y: 3.9753327, z: 3.9753327}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 926528390}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1078908134
 GameObject:
   m_ObjectHideFlags: 0
@@ -46037,11 +46156,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.908
+      value: -20.4
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.362
+      value: -3.97
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -46313,6 +46432,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRb: {fileID: 5174926721603753804}
+  drainSnake: {fileID: 926528388}
+  playerTransform: {fileID: 0}
+  snakeRenderer: {fileID: 926528389}
+  snakeSprites:
+  - {fileID: -1035512924054681516, guid: 46732cf276b64fd48b21c7beaf463890, type: 3}
+  - {fileID: -667161503074854833, guid: 458613e9d0372be4eb3055e5cdd2c6b0, type: 3}
+  - {fileID: -8293009130767847124, guid: 299f46be0f431fd4bab9e7cc7e8291b6, type: 3}
+  - {fileID: -1080542400274269293, guid: f1673f5db5d2fda4da2e3df3651f6c93, type: 3}
+  - {fileID: 804254405564734301, guid: 6d09323b293ca6242af99cec662b9ba9, type: 3}
+  playerRenderer: {fileID: 5174926721603753799}
+  wrappedSprites:
+  - {fileID: 3330566885566759747, guid: 7c935046986d5054088150ab9e122958, type: 3}
+  - {fileID: 5609133663546538877, guid: 8e2a531c34c6ea94a93ad4bffce17129, type: 3}
+  - {fileID: -2655192256094660069, guid: 3069e2041aff99f4b82c3023a8e6b513, type: 3}
+  - {fileID: -4581412022585965685, guid: b0cef3cc435673144946ddc336800029, type: 3}
+  - {fileID: -3988944605676875753, guid: a303ab1123b57ee418976a1e20c752df, type: 3}
+  - {fileID: 8259046298841449053, guid: a6f4f5d58cfb6ba428e30b84db3b93e6, type: 3}
+  - {fileID: 7135176032764308698, guid: c1253a159267684489dc08f147b6b582, type: 3}
+  - {fileID: -1623319088150407854, guid: 7bc5799652e32774cbd729e0f5a13fa1, type: 3}
+  wrapFrameDelay: 0.05
+  spriteControllerScript: {fileID: 566081610}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -46339,3 +46479,4 @@ SceneRoots:
   - {fileID: 543107575}
   - {fileID: 917955191}
   - {fileID: 1022835522}
+  - {fileID: 926528390}

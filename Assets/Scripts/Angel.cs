@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
@@ -12,6 +14,26 @@ public class NewMonoBehaviourScript : MonoBehaviour
     int maxHeight = 0;
     float saveTracker = 1f;
     float resetSaveTimer = 0f;
+    public GameObject drainSnake;
+    public Transform playerTransform;
+    public SpriteRenderer snakeRenderer;
+    public Sprite[] snakeSprites; 
+    private int[] swingPattern = { 0, 1, 2, 1, 0, 3, 4, 3, 0 };
+    private float swingInterval = 0.1f;
+    private Coroutine swingCoroutine;
+    public SpriteRenderer playerRenderer; 
+    public Sprite[] wrappedSprites; 
+    public float wrapFrameDelay = 0.05f; 
+    public PlungerMovement spriteControllerScript; 
+
+
+
+
+
+    void Start()
+    {
+        playerTransform = transform;
+    }
 
     void Update()
     {
@@ -35,8 +57,10 @@ public class NewMonoBehaviourScript : MonoBehaviour
             fallDistance(fallHeight, currHeight);
         }
 
-        if(!isFalling){
-            if(maxHeight < currHeight){
+        if (!isFalling)
+        {
+            if (maxHeight < currHeight)
+            {
                 maxHeight = currHeight;
                 timeSinceHighScore = 0;
             }
@@ -53,24 +77,29 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     void fallDistance(int start, int end)
     {
-        if(start - end < 5) // ignores falls less than 5 meters
+        if (start - end < 5) // ignores falls less than 5 meters
         {
             return;
         }
         else
         {
-            angelTriggerChance(start-end); //Counts all drops greater than or equal to 5 meters. 
+            angelTriggerChance(start - end); //Counts all drops greater than or equal to 5 meters. 
         }
     }
 
-    void angelTriggerChance(int currFall){
+    void angelTriggerChance(int currFall)
+    {
         /*The angel is triggered by cumulative fall distance,
           the current fall distance, and how much time as passed without them reaching a new maximum height.
           the cumulative fall distance and time past has less influence overall (12%/12% respectively)
           while the current fall has the greatest impact (40%) which scales exponentially to your fall*/
 
-        int currFallChance = (int) ((currFall * currFall) * 0.05);
-        if(currFallChance > 40){ //Caps the chance to 40
+        // THIS IS FOR TESTING PURPOSES
+        //triggerAngel();
+
+        int currFallChance = (int)((currFall * currFall) * 0.05);
+        if (currFallChance > 40)
+        { //Caps the chance to 40
             currFallChance = 40;
         }
 
@@ -79,43 +108,185 @@ public class NewMonoBehaviourScript : MonoBehaviour
         int seconds = Mathf.FloorToInt(timeSinceHighScore % 60);
 
         timeChance = ((minutes * 60) + seconds) / 25; //max is 5 minutes
-        if(hours > 0 || minutes > 5){ //caps the chance to 12
+        if (hours > 0 || minutes > 5)
+        { //caps the chance to 12
             timeChance = 12;
         }
 
         float totalFallChance = currFallChance + cumulFallChance + timeChance; //sums the chance
-        int randomNumGen = Random.Range(10,90); //rolls 10-90 and compare the "chance" to the rng
+        int randomNumGen = Random.Range(10, 90); //rolls 10-90 and compare the "chance" to the rng
 
         Debug.Log(currFallChance + " " + timeChance + " " + cumulFallChance + " " + totalFallChance + " compared to " + randomNumGen);
-        if (totalFallChance >= randomNumGen){ //rolls for angel mechanic chance
+        if (totalFallChance >= randomNumGen)
+        { //rolls for angel mechanic chance
             cumulFallChance = 0;
             triggerAngel();
         }
-        else{
+        else
+        {
             //If angel mechanic didn't occur, the current fall will be added to the cumulative fall 
-            cumulFallChance += (float) ((currFall * currFall) * 0.04);
-            if(cumulFallChance > 12){ //Caps the chance to 12
+            cumulFallChance += (float)((currFall * currFall) * 0.04);
+            if (cumulFallChance > 12)
+            { //Caps the chance to 12
                 cumulFallChance = 12;
             }
         }
     }
+
     void triggerAngel()
     {
-        //resets player's position
-        float x = PlayerPrefs.GetFloat("posX", 0f); 
-        float y = PlayerPrefs.GetFloat("posY", 0f);
-        float z = PlayerPrefs.GetFloat("posZ", 0f);
-    
-        transform.position = new Vector3(x, y, z);
-        return;
+        StartCoroutine(SnakePickupSequence());
     }
 
+
     void SavePosition(Vector3 position)
-    { 
+    {
         //save players position
         PlayerPrefs.SetFloat("posX", position.x);
         PlayerPrefs.SetFloat("posY", position.y);
         PlayerPrefs.SetFloat("posZ", position.z);
         PlayerPrefs.Save();
     }
+
+    IEnumerator SnakePickupSequence()
+    {
+        if (drainSnake == null)
+        {
+            Debug.LogError("Missing drain snake reference!");
+            yield break;
+        }
+
+        StartSwing();
+
+        float speed = 14f;
+        float exitSpeed = speed * 1.5f;
+
+
+        // Load the saved position
+        Vector3 savedPos = new Vector3(
+        PlayerPrefs.GetFloat("posX", 0f),
+        PlayerPrefs.GetFloat("posY", 0f),
+        PlayerPrefs.GetFloat("posZ", 0f)
+        );
+
+        // Snake drops down to grab the player 
+        drainSnake.SetActive(true);
+        spriteControllerScript.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        drainSnake.transform.position = transform.position + new Vector3(0, 20f, 0);
+        Vector3 grabPosition = transform.position + new Vector3(0, 1f, 0);
+        
+
+        while (Vector3.Distance(drainSnake.transform.position, grabPosition) > 0.1f)
+        {
+            drainSnake.transform.position = Vector3.MoveTowards(
+                drainSnake.transform.position,
+                grabPosition,
+                speed * Time.deltaTime
+            );
+            yield return null;
+        }
+        playerTransform.rotation = Quaternion.identity;
+        transform.SetParent(drainSnake.transform);
+        playerRb.simulated = false;
+        StopSwing();        
+
+        yield return StartCoroutine(PlayWrapUpAnimation());
+
+
+        // Snake carries player to saved position 
+        Vector3 carryPosition = savedPos + new Vector3(0, 1f, 0); 
+        while (Vector3.Distance(drainSnake.transform.position, carryPosition) > 0.1f)
+        {
+            drainSnake.transform.position = Vector3.MoveTowards(
+                drainSnake.transform.position,
+                carryPosition,
+                speed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        // Set player down 
+        transform.SetParent(null);
+        transform.position = savedPos;
+        playerRb.simulated = true;
+        playerRb.linearVelocity = Vector2.zero;
+
+        yield return StartCoroutine(PlayUnwrapAnimation());
+
+        // Snake exits upward
+        float exitDistance = 20f; 
+        Vector3 exitTarget = drainSnake.transform.position + new Vector3(0, exitDistance, 0);
+
+        while (Vector3.Distance(drainSnake.transform.position, exitTarget) > 0.1f)
+        {
+            drainSnake.transform.position = Vector3.MoveTowards(
+                drainSnake.transform.position,
+                exitTarget,
+                exitSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        drainSnake.SetActive(false);
+
+        spriteControllerScript.enabled = true;
+
+    }
+
+    IEnumerator SwingAnimation()
+    {
+        int index = 0;
+        while (true)
+        {
+            int spriteIndex = swingPattern[index];
+            snakeRenderer.sprite = snakeSprites[spriteIndex];
+
+            index = (index + 1) % swingPattern.Length;
+            yield return new WaitForSeconds(swingInterval);
+        }
+    }
+
+
+    void StartSwing()
+    {
+        if (swingCoroutine == null)
+        {
+            swingCoroutine = StartCoroutine(SwingAnimation());
+        }
+    }
+
+    void StopSwing()
+    {
+        if (swingCoroutine != null)
+        {
+            StopCoroutine(swingCoroutine);
+            swingCoroutine = null;
+        }
+    }
+
+    IEnumerator PlayWrapUpAnimation()
+    {
+        snakeRenderer.sprite = snakeSprites[0];
+        for (int i = 0; i < wrappedSprites.Length; i++)
+        {
+            playerRenderer.sprite = wrappedSprites[i];
+            yield return new WaitForSeconds(wrapFrameDelay);
+        }
+        // Leaves the last wrap frame on screen
+        playerRenderer.sprite = wrappedSprites[wrappedSprites.Length - 1];
+    }
+
+    IEnumerator PlayUnwrapAnimation()
+    {
+        for (int i = wrappedSprites.Length - 1; i >= 0; i--)
+        {
+            playerRenderer.sprite = wrappedSprites[i];
+            yield return new WaitForSeconds(wrapFrameDelay);
+        }
+    }
+
+
 }
+
+
