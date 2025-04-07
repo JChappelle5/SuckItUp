@@ -17,16 +17,15 @@ public class NewMonoBehaviourScript : MonoBehaviour
     public GameObject drainSnake;
     public Transform playerTransform;
     public SpriteRenderer snakeRenderer;
-    public Sprite[] snakeSprites; 
+    public Sprite[] snakeSprites;
     private int[] swingPattern = { 0, 1, 2, 1, 0, 3, 4, 3, 0 };
     private float swingInterval = 0.1f;
     private Coroutine swingCoroutine;
-    public SpriteRenderer playerRenderer; 
-    public Sprite[] wrappedSprites; 
-    public float wrapFrameDelay = 0.05f; 
-    public PlungerMovement spriteControllerScript; 
-
-
+    public SpriteRenderer playerRenderer;
+    public Sprite[] wrappedSprites;
+    public float wrapFrameDelay = 0.05f;
+    public PlungerMovement spriteControllerScript;
+    bool angelTriggeredThisFall = false;
 
 
 
@@ -34,6 +33,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     {
         playerTransform = transform;
     }
+
 
     void Update()
     {
@@ -46,15 +46,34 @@ public class NewMonoBehaviourScript : MonoBehaviour
         if (verticalVelocity < -0.1f && !isFalling)
         {
             isFalling = true;
-            fallHeight = meters;
+            fallHeight = Mathf.FloorToInt(playerRb.position.y / 5.235f);
+            angelTriggeredThisFall = false;
+        }
+
+        // MID-FALL CHECK (new!)
+        if (isFalling && !angelTriggeredThisFall)
+        {
+            int currentHeight = Mathf.FloorToInt(playerRb.position.y / 5.235f);
+            int fallDistanceSoFar = fallHeight - currentHeight;
+
+            if (fallDistanceSoFar >= 5) // only if falling more than 5m
+            {
+                angelTriggeredThisFall = true;
+                angelTriggerChance(fallDistanceSoFar); // can instantly trigger the snake
+            }
         }
 
         // END FALL
         if (isFalling && verticalVelocity >= 0f)
         {
             isFalling = false;
-            currHeight = meters;
-            fallDistance(fallHeight, currHeight);
+            currHeight = Mathf.FloorToInt(playerRb.position.y / 5.235f);
+
+            // Optional: only call this if angel didn't already trigger
+            if (!angelTriggeredThisFall)
+            {
+                fallDistance(fallHeight, currHeight);
+            }
         }
 
         if (!isFalling)
@@ -74,6 +93,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
             }
         }
     }
+
 
     void fallDistance(int start, int end)
     {
@@ -158,9 +178,8 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
         StartSwing();
 
-        float speed = 14f;
+        float speed = 15f;
         float exitSpeed = speed * 1.5f;
-
 
         // Load the saved position
         Vector3 savedPos = new Vector3(
@@ -172,30 +191,36 @@ public class NewMonoBehaviourScript : MonoBehaviour
         // Snake drops down to grab the player 
         drainSnake.SetActive(true);
         spriteControllerScript.enabled = false;
-        yield return new WaitForSeconds(0.5f);
-        drainSnake.transform.position = transform.position + new Vector3(0, 20f, 0);
-        Vector3 grabPosition = transform.position + new Vector3(0, 1f, 0);
-        
 
-        while (Vector3.Distance(drainSnake.transform.position, grabPosition) > 0.1f)
+        // Snake comes down
+        drainSnake.transform.position = transform.position + new Vector3(0, 12f, 0);
+
+        while (true)
         {
+            Vector3 currentGrabPosition = transform.position + new Vector3(0, 1f, 0);
+
             drainSnake.transform.position = Vector3.MoveTowards(
                 drainSnake.transform.position,
-                grabPosition,
+                currentGrabPosition,
                 speed * Time.deltaTime
             );
+
+            // Stop when snake is close enough to the player's current position
+            if (Vector3.Distance(drainSnake.transform.position, currentGrabPosition) < 0.1f)
+                break;
+
             yield return null;
         }
+
         playerTransform.rotation = Quaternion.identity;
         transform.SetParent(drainSnake.transform);
         playerRb.simulated = false;
-        StopSwing();        
+        StopSwing();
 
         yield return StartCoroutine(PlayWrapUpAnimation());
 
-
         // Snake carries player to saved position 
-        Vector3 carryPosition = savedPos + new Vector3(0, 1f, 0); 
+        Vector3 carryPosition = savedPos + new Vector3(0, 1f, 0);
         while (Vector3.Distance(drainSnake.transform.position, carryPosition) > 0.1f)
         {
             drainSnake.transform.position = Vector3.MoveTowards(
@@ -215,7 +240,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         yield return StartCoroutine(PlayUnwrapAnimation());
 
         // Snake exits upward
-        float exitDistance = 20f; 
+        float exitDistance = 20f;
         Vector3 exitTarget = drainSnake.transform.position + new Vector3(0, exitDistance, 0);
 
         while (Vector3.Distance(drainSnake.transform.position, exitTarget) > 0.1f)
@@ -233,6 +258,9 @@ public class NewMonoBehaviourScript : MonoBehaviour
         spriteControllerScript.enabled = true;
 
     }
+
+
+
 
     IEnumerator SwingAnimation()
     {
@@ -288,5 +316,3 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
 
 }
-
-
