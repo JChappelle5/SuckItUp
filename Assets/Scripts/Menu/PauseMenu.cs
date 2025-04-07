@@ -11,11 +11,16 @@ public class PauseMenu : MonoBehaviour
     public GameObject resetMenu;
     public GameObject quitImage;
     public static bool isPaused;
+    public Rigidbody2D rb;
+    private GameObject player;
+    private PlungerMovement flingScript;
 
     void Start()
     {
         pauseMenu.SetActive(false); // Hide the pause menu at the start
         isPaused = false; 
+        player = GameObject.FindGameObjectWithTag("Player"); // Find the player object
+        flingScript = player.GetComponent<PlungerMovement>(); // Get the PlayerScript component
     }
 
     // Update is called once per frame
@@ -62,5 +67,20 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1f; // Resume game
         SceneManager.LoadScene(1); // Reload current scene
+    }
+
+    public void UnstuckPlayer()
+    {
+        // Checks if player is not moving and not grounded
+        if(!flingScript.isCurrentlyGrounded && rb.linearVelocity.magnitude < 0.01f)
+        {
+            Debug.Log("Player is stuck");
+            rb.AddForce(new Vector2(1,1) * 250); // Apply upward force to unstuck player
+            ResumeGame();
+        }
+        else
+        {
+            Debug.Log("Player is not stuck");
+        }
     }
 }

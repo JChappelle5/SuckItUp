@@ -31493,6 +31493,7 @@ MonoBehaviour:
   pauseButtons: {fileID: 1802424439}
   resetMenu: {fileID: 1250855281}
   quitImage: {fileID: 1366674103}
+  rb: {fileID: 5174926721603753804}
 --- !u!4 &917955191
 Transform:
   m_ObjectHideFlags: 0
@@ -44316,13 +44317,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 917955189}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 917955190}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: UnstuckPlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -46036,11 +46037,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.04
+      value: -21.908
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 127.18
+      value: -4.362
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -46274,15 +46275,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c2a168ccba3e97469f59ae027f8c761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  narratorManager: {fileID: 543107573}
-  heightTracker: {fileID: 581907708}
   unityUnitsPerMeter: 5.235
-  bigFallThreshold: 3.66
-  heightCheckpointInterval: 2.61
   repeatFallThreshold: 2
   minFallDistanceForRepeat: 1.57
   significantProgressThreshold: 10
   stuckTimeThreshold: 30
+  baseHeightCheckpointInterval: 1.5
+  initialNoFallWait: 30
 --- !u!50 &5174926721603753804 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
