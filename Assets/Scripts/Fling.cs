@@ -9,7 +9,7 @@ public class PlungerMovement : MonoBehaviour
     public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
     public static bool isCharging = false;
-    private static bool isStickingToWall = false;
+    public bool isStickingToWall = false;
     public LayerMask stickableSurfaceLayer;
     public LayerMask slimeLayer;
     public Transform bottomDetector;
@@ -93,7 +93,6 @@ public class PlungerMovement : MonoBehaviour
             if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
             {
                 StickToWall(); // Stick if pressing Space while on the wall
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerSticking;
             }
 
             if (TimerOn && isStickingToWall)
@@ -373,6 +372,7 @@ public class PlungerMovement : MonoBehaviour
     private void StickToWall()
     {
         isStickingToWall = true;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerSticking;
         float rotation = rb.rotation % 360;
 
         if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall

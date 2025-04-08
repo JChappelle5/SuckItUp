@@ -50759,6 +50759,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRb: {fileID: 5174926721603753804}
+  drainSnake: {fileID: 0}
+  playerTransform: {fileID: 0}
+  snakeRenderer: {fileID: 0}
+  snakeSprites: []
+  playerRenderer: {fileID: 0}
+  wrappedSprites: []
+  wrapFrameDelay: 0.05
+  spriteControllerScript: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+
 
 public class PlatformMovement : MonoBehaviour
 {
@@ -9,9 +11,16 @@ public class PlatformMovement : MonoBehaviour
     private Vector3 nextPosition;
     private GameObject player; // Store reference to the player
 
+    public bool isVertical; // Tracks if this platform is vertical
+
     void Start()
     {
         nextPosition = pointB.position;
+
+        // Determine if platform is vertical
+        Vector3 moveDir = (pointB.position - pointA.position).normalized;
+        isVertical = Mathf.Abs(moveDir.y) > Mathf.Abs(moveDir.x);
+
     }
 
     void Update()
@@ -31,6 +40,7 @@ public class PlatformMovement : MonoBehaviour
             player = collision.gameObject; // Store reference
             player.transform.SetParent(transform);
         }
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -51,4 +61,6 @@ public class PlatformMovement : MonoBehaviour
             player = null; // Clear reference
         }
     }
+
+
 }
