@@ -8,9 +8,10 @@ public class PlungerMovement : MonoBehaviour
     public float maxPullBack = 45f;
     public float minLaunchForce = 5f;
     public float maxLaunchForce = 20f;
-    private bool isCharging = false;
-    private bool isStickingToWall = false;
+    public static bool isCharging = false;
+    private static bool isStickingToWall = false;
     public LayerMask stickableSurfaceLayer;
+    public LayerMask slimeLayer;
     public Transform bottomDetector;
     public float groundCheckRadius = 0.1f; // For ground check
     public float wallCheckRadius = 0.1f;   // For wall check
@@ -32,6 +33,7 @@ public class PlungerMovement : MonoBehaviour
     public float stickTime;
     public bool isCurrentlyGrounded;
     public GameObject tilemap;
+    public GameObject slimeTilemap;
 
 
     void Awake()
@@ -83,6 +85,11 @@ public class PlungerMovement : MonoBehaviour
                 Launch();
             }
 
+            if(Input.GetKeyUp(KeyCode.Space) && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isCharging)
+            {
+                Launch();
+            }
+            
             if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
             {
                 StickToWall(); // Stick if pressing Space while on the wall
@@ -116,12 +123,26 @@ public class PlungerMovement : MonoBehaviour
         {
             HandleAirRotation();
         }
+
+        if (isStickingToWall && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))
+        {
+            rb.AddForce(Vector2.down * 1.5f, ForceMode2D.Force);
+        }
     }
 
     void HandleCharging()
     {
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-        rb.linearVelocity = Vector2.zero;
+        if(Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer))
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+            rb.linearVelocity = Vector2.zero;
+        }
+        else if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+            rb.linearVelocity = new Vector2(0, -1);
+        }
+
         float input = -Input.GetAxisRaw("Horizontal");
 
         if (input != 0)
@@ -190,7 +211,8 @@ public class PlungerMovement : MonoBehaviour
     {
         if (!isCharging) return;
 
-        if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
+        if ((Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer)
+            || Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))  && isRotatedOnWall())
         {
             isStickingToWall = true;  // Force stick state if we're actually on wall
         }
@@ -261,8 +283,9 @@ public class PlungerMovement : MonoBehaviour
     bool IsGrounded()
     {
         Collider2D hit = Physics2D.OverlapCircle(bottomDetector.position, groundCheckRadius, stickableSurfaceLayer);
+        Collider2D slimeHit = Physics2D.OverlapCircle(bottomDetector.position, groundCheckRadius, slimeLayer);
         Debug.DrawRay(bottomDetector.position, Vector2.down * groundCheckRadius, hit != null ? Color.green : Color.red);
-        return hit != null;
+        return hit != null || slimeHit != null;
     }
 
     bool isRotatedOnWall()
@@ -274,7 +297,18 @@ public class PlungerMovement : MonoBehaviour
     //  Wall Detection Using OnCollisionEnter2D
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
+        if (((1 << collision.gameObject.layer) & slimeLayer) != 0)
+        {
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isRotatedOnWall() && Input.GetKeyDown(KeyCode.Space))
+                {
+                    StickToSlime();
+                    break;
+                }
+            }
+        }
+        else if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
             foreach (ContactPoint2D contact in collision.contacts)
             {
@@ -291,7 +325,28 @@ public class PlungerMovement : MonoBehaviour
     // Restick player if pressing Space while already on the wall (Same as OnEnter but for continuous checks)
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
+        if (((1 << collision.gameObject.layer) & slimeLayer) != 0)
+        {
+            // Checks if player is touching/rotated on wall
+            if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isRotatedOnWall())
+            {
+                if (Input.GetKey(KeyCode.Space) && !isStickingToWall) // if holding space stick to wall
+                {
+                    StickToSlime();
+                }
+                else if (isStickingToWall && !TimerOn)
+                {
+                    // Start the timer if we're stuck but timer isn't running
+                    TimerOn = true;
+                }
+            }
+            else if (isStickingToWall)
+            {
+                // Lost proper wall contact
+                unstickPlayer();
+            }
+        }
+        else if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
             // Checks if player is touching/rotated on wall
             if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
@@ -332,6 +387,27 @@ public class PlungerMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero; // Set velocity to 0
         rb.gravityScale = 0; // Freeze gravity while sticking to wall
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY; // Freeze position
+        TimerOn = true;
+        stickTime = 3f;
+    }
+
+    private void StickToSlime()
+    {
+        isStickingToWall = true;
+        float rotation = rb.rotation % 360;
+
+        if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+        {
+            rb.rotation = 270;
+        }
+        else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
+        {
+            rb.rotation = 90;
+        }
+
+        rb.linearVelocity = new Vector2(0, -1); // Set horizontal velocity to 0
+        rb.gravityScale = 0.25f; // Freeze gravity while sticking to wall
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX; // Freeze position
         TimerOn = true;
         stickTime = 3f;
     }
@@ -388,11 +464,23 @@ public class PlungerMovement : MonoBehaviour
 
     private IEnumerator TemporarilyDisableStickable()
     {
-        if (tilemap != null)
+        if(Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer))
         {
-            tilemap.layer = LayerMask.NameToLayer("Default"); // Change to non-stickable
-            yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds
-            tilemap.layer = LayerMask.NameToLayer("StickableSurface"); // Change back to stickable
+            if (tilemap != null)
+            {
+                tilemap.layer = LayerMask.NameToLayer("Default"); // Change to non-stickable
+                yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds
+                tilemap.layer = LayerMask.NameToLayer("StickableSurface"); // Change back to stickable
+            }
+        }
+        else if(Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))
+        {
+            if(slimeTilemap != null)
+            {
+                slimeTilemap.layer = LayerMask.NameToLayer("Default"); // Change to non-stickable
+                yield return new WaitForSeconds(0.5f); // Wait 0.5 seconds
+                slimeTilemap.layer = LayerMask.NameToLayer("Slime"); // Change back to slime
+            }
         }
         else
         {
