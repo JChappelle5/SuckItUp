@@ -106,10 +106,9 @@ public class PlayerRageEvents : MonoBehaviour
 
             float fallDistanceMeters = (highestPointBeforeFall - currentHeight) / unityUnitsPerMeter;
 
-            // 2.1) If we made significant progress but fell all the way back
+            // 2.1) If we made significant progress but fell all the way back — no longer penalize frustration
             if (significantProgressMade && currentHeight <= initialStartHeight + 0.1f)
             {
-                IncreaseFrustration(2f, "Fell all the way back to the beginning after significant progress");
                 significantProgressMade = false;
                 highestHeightReached = initialStartHeight;
                 returnedToStartThisFall = true;
