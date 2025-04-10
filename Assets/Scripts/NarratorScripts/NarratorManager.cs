@@ -21,6 +21,9 @@ public class NarratorManager : MonoBehaviour
     public AudioClip[] newHeightMediumFrustration;
     public AudioClip[] newHeightHighFrustration;
 
+    [Header("Intro Clips")]
+    public AudioClip[] introClips;
+
     // Track previously played clips to avoid repetition
     private Dictionary<AudioClip[], List<AudioClip>> clipHistory = new Dictionary<AudioClip[], List<AudioClip>>();
 
@@ -58,4 +61,10 @@ public class NarratorManager : MonoBehaviour
         else
             PlayRandomClip(high);
     }
+
+    public void PlayIntroClip()
+    {
+        PlayRandomClip(introClips);
+    }
+
 }

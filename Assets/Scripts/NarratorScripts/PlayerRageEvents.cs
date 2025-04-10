@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerRageEvents : MonoBehaviour
@@ -106,7 +106,7 @@ public class PlayerRageEvents : MonoBehaviour
 
             float fallDistanceMeters = (highestPointBeforeFall - currentHeight) / unityUnitsPerMeter;
 
-            // 2.1) If we made significant progress but fell all the way back � no longer penalize frustration
+            // 2.1) If we made significant progress but fell all the way back — no longer penalize frustration
             if (significantProgressMade && currentHeight <= initialStartHeight + 0.1f)
             {
                 significantProgressMade = false;
@@ -235,9 +235,9 @@ public class PlayerRageEvents : MonoBehaviour
     private float GetDynamicBigFallThreshold()
     {
         float t = Mathf.InverseLerp(1f, 10f, frustrationLevel);
-        // Lerp multiplier from 0.5 (at low frustration) to 1.5 (at high frustration)
-        float multiplier = Mathf.Lerp(0.5f, 1.5f, t);
-        return 3f * multiplier; // baseBigFallThreshold = 3m
+        // Lerp multiplier from 0.5 (at frustration 1) to 1.1667 (at frustration 10)
+        float multiplier = Mathf.Lerp(0.5f, 1.1667f, t);
+        return 3f * multiplier; // e.g., at frustration 1: 3x0.5 = 1.5m; frustration 10: 3x1.1667 ≈ 3.5m.
     }
 
     private float GetDynamicNewHeightThreshold()
