@@ -85,14 +85,9 @@ public class PlungerMovement : MonoBehaviour
                 Launch();
             }
 
-            if(Input.GetKeyUp(KeyCode.Space) && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isCharging)
+            if (Input.GetKeyUp(KeyCode.Space) && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isCharging)
             {
                 Launch();
-            }
-            
-            if (isStickingToWall && Input.GetKeyDown(KeyCode.Space))
-            {
-                StickToWall(); // Stick if pressing Space while on the wall
             }
 
             if (TimerOn && isStickingToWall)
@@ -125,6 +120,7 @@ public class PlungerMovement : MonoBehaviour
 
         if (isStickingToWall && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))
         {
+            Debug.Log("Sliding on slime");
             rb.AddForce(Vector2.down * 1.5f, ForceMode2D.Force);
         }
     }
@@ -210,11 +206,11 @@ public class PlungerMovement : MonoBehaviour
     {
         if (!isCharging) return;
 
-        if ((Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer)
-            || Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))  && isRotatedOnWall())
-        {
-            isStickingToWall = true;  // Force stick state if we're actually on wall
-        }
+        //if ((Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer)
+        //    || Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))  && isRotatedOnWall())
+        //{
+        //    isStickingToWall = true;  // Force stick state if we're actually on wall
+        //}
 
         Debug.Log($"Launch - Charge: {storedLeanAngle}, IsSticking: {isStickingToWall}, Rotation: {rb.rotation}");
 
@@ -394,9 +390,10 @@ public class PlungerMovement : MonoBehaviour
     private void StickToSlime()
     {
         isStickingToWall = true;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerSticking;
         float rotation = rb.rotation % 360;
 
-        if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
+        if ((rotation >= 240 && rotation <= 300) || (rotation <= -60 && rotation >= -120)) // on right wall
         {
             rb.rotation = 270;
         }
@@ -410,6 +407,8 @@ public class PlungerMovement : MonoBehaviour
         rb.constraints = RigidbodyConstraints2D.FreezePositionX; // Freeze position
         TimerOn = true;
         stickTime = 3f;
+        Debug.Log("STUCK TO SLIME! GravityScale = " + rb.gravityScale + " | Constraints = " + rb.constraints);
+
     }
 
     private void checkOnFloor()
