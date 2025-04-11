@@ -8848,8 +8848,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3f208d320a46ce44ba3a662f75b7c46e, type: 3}
   - {fileID: 8300000, guid: 4795109c3a6e48543a935e420c52e4dc, type: 3}
   newHeightLowFrustration:
-  - {fileID: 8300000, guid: 53ce27fb6a7113843900217c73107db2, type: 3}
-  - {fileID: 8300000, guid: f09329c033754eb4dbb0a41e80c4fc74, type: 3}
   - {fileID: 8300000, guid: a6d9205cbd211304283684e234602390, type: 3}
   - {fileID: 8300000, guid: 6b1f4e0feb4d57e4094efff8542d3284, type: 3}
   - {fileID: 8300000, guid: 9876ae3f12e682e48845411e2ed54fc8, type: 3}
@@ -56967,7 +56965,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unityUnitsPerMeter: 5.235
   repeatFallThreshold: 2
-  minFallDistanceForRepeat: 1.57
+  minFallDistanceForRepeat: 1.5
   significantProgressThreshold: 10
   stuckTimeThreshold: 30
   baseHeightCheckpointInterval: 1.5
