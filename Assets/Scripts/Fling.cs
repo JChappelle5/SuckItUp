@@ -34,6 +34,7 @@ public class PlungerMovement : MonoBehaviour
     public bool isCurrentlyGrounded;
     public GameObject tilemap;
     public GameObject slimeTilemap;
+    private bool isOnSlime = false;
 
 
     void Awake()
@@ -109,18 +110,17 @@ public class PlungerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Handle movement
-        if ((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space) && ((Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.D))))
+        if((isCurrentlyGrounded || isStickingToWall) && Input.GetKey(KeyCode.Space) && ((Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.D))))
         {
             HandleCharging();
         }
-        else if (!isCurrentlyGrounded && !isStickingToWall)
+        else if(!isCurrentlyGrounded && !isStickingToWall)
         {
             HandleAirRotation();
         }
 
-        if (isStickingToWall && Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer))
+        if(isStickingToWall && isOnSlime)
         {
-            Debug.Log("Sliding on slime");
             rb.AddForce(Vector2.down * 1.5f, ForceMode2D.Force);
         }
     }
@@ -271,6 +271,7 @@ public class PlungerMovement : MonoBehaviour
         // Reset
         isCharging = false;
         isStickingToWall = false;
+        isOnSlime = false;
         storedLeanAngle = 0f;
     }
 
@@ -390,6 +391,7 @@ public class PlungerMovement : MonoBehaviour
     private void StickToSlime()
     {
         isStickingToWall = true;
+        isOnSlime = true;
         this.gameObject.GetComponent<SpriteRenderer>().sprite = PlayerSticking;
         float rotation = rb.rotation % 360;
 
@@ -402,9 +404,9 @@ public class PlungerMovement : MonoBehaviour
             rb.rotation = 90;
         }
 
-        rb.linearVelocity = new Vector2(0, -1); // Set horizontal velocity to 0
-        rb.gravityScale = 0.25f; // Freeze gravity while sticking to wall
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX; // Freeze position
+        rb.linearVelocity = new Vector2(0, -1); // Put downward velocity on player
+        rb.gravityScale = 0f; // Reduce gravity when on slime
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX; // Freeze x position
         TimerOn = true;
         stickTime = 3f;
         Debug.Log("STUCK TO SLIME! GravityScale = " + rb.gravityScale + " | Constraints = " + rb.constraints);
@@ -438,6 +440,7 @@ public class PlungerMovement : MonoBehaviour
     private void unstickPlayer()
     {
         isStickingToWall = false;
+        isOnSlime = false;
         isCharging = false; // Resets sprite
         storedLeanAngle = 0f; // Resets stored angle
         rb.gravityScale = 10;

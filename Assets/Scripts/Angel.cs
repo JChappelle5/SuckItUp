@@ -2,15 +2,15 @@ using UnityEngine;
 using System.Collections;
 
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Angel : MonoBehaviour
 {
     public Rigidbody2D playerRb;
     bool isFalling = false;
     int fallHeight;
     int currHeight;
-    float cumulFallChance = 0;
+    public float cumulFallChance = 0;
     float timeChance;
-    float timeSinceHighScore = 0;
+    public float timeSinceHighScore = 0;
     int maxHeight = 0;
     float saveTracker = 1f;
     float resetSaveTimer = 0f;

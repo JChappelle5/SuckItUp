@@ -7965,6 +7965,7 @@ MonoBehaviour:
   pointA: {fileID: 1094958668}
   pointB: {fileID: 1415725904}
   moveSpeed: 5
+  isVertical: 0
 --- !u!251 &265341742
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -9771,6 +9772,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 060844e8e95cf3048a76b92236f16107, type: 3}
   - {fileID: 8300000, guid: b13cbdef9c6d51f45a9348cfe0a8b182, type: 3}
   - {fileID: 8300000, guid: 652e6175ca080b84bba37c801438c542, type: 3}
+  introClips: []
 --- !u!82 &543107574
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9904,6 +9906,7 @@ MonoBehaviour:
   maxPullBack: 45
   minLaunchForce: 20
   maxLaunchForce: 45
+  isStickingToWall: 0
   stickableSurfaceLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -33945,7 +33948,6 @@ GameObject:
   - component: {fileID: 1054458221}
   - component: {fileID: 1054458220}
   - component: {fileID: 1054458219}
-  - component: {fileID: 1054458218}
   m_Layer: 8
   m_Name: Slime
   m_TagString: Untagged
@@ -33968,18 +33970,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 604811503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1054458218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1054458216}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74e0ebd8b4546c54c8be5fa6be648439, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!19719996 &1054458219
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -48163,6 +48153,7 @@ MonoBehaviour:
   pointA: {fileID: 9094850}
   pointB: {fileID: 2114081758}
   moveSpeed: 4
+  isVertical: 0
 --- !u!251 &1434616507
 PlatformEffector2D:
   m_ObjectHideFlags: 0

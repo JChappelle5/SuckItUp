@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
+using System.IO;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class PauseMenu : MonoBehaviour
     public Rigidbody2D rb;
     private GameObject player;
     private PlungerMovement flingScript;
+    public const string SAVE_FILENAME = "/savefile.json";
+    public SaveSystem saveSystem;
+    public Vector2 spawnPosition = new Vector2(-21.908f, -4.362f); // Default spawn position
 
     void Start()
     {
@@ -59,6 +64,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMenu()
     {
+        saveSystem.SaveData(); // Save game before returning to menu
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
@@ -66,6 +72,7 @@ public class PauseMenu : MonoBehaviour
     public void ResetGame()
     {
         Time.timeScale = 1f; // Resume game
+        saveSystem.SaveData(spawnPosition); // Save game at spawn position
         SceneManager.LoadScene(1); // Reload current scene
     }
 

@@ -12986,6 +12986,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1318384591}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &707457278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37287,6 +37299,8 @@ MonoBehaviour:
   resetMenu: {fileID: 1250855281}
   quitImage: {fileID: 1366674103}
   rb: {fileID: 5174926721603753804}
+  saveSystem: {fileID: 1318384592}
+  spawnPosition: {x: -21.908, y: -4.362}
 --- !u!4 &917955191
 Transform:
   m_ObjectHideFlags: 0
@@ -37760,7 +37774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1022835519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48347,7 +48361,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 205
-      m_TileSpriteIndex: 205
+      m_TileSpriteIndex: 231
       m_TileMatrixIndex: 4
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -74844,8 +74858,8 @@ Tilemap:
     m_Data: {fileID: 21301348, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
   - m_RefCount: 2
     m_Data: {fileID: 21301350, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 21301352, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 0
@@ -74896,8 +74910,8 @@ Tilemap:
     m_Data: {fileID: 21300708, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
   - m_RefCount: 135
     m_Data: {fileID: 21300706, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 21301352, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
   - m_RefCount: 163
     m_Data: {fileID: 21300814, guid: f92108e62af6ac444980a5f1a0acb5b8, type: 3}
   - m_RefCount: 131
@@ -75394,6 +75408,53 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1318384591
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1318384593}
+  - component: {fileID: 1318384592}
+  m_Layer: 0
+  m_Name: SaveSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1318384592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318384591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8003a6b0bf524ef479b92d978631cde4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 5174926721603753804}
+  spawnPosition: {x: -21.908, y: -4.362}
+  stopwatch: {fileID: 2121990466}
+--- !u!4 &1318384593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318384591}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -18.57081, y: -2.4682417, z: 0.0043143276}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1327307965
 GameObject:
   m_ObjectHideFlags: 0
@@ -84506,6 +84567,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRb: {fileID: 5174926721603753804}
+  cumulFallChance: 0
+  timeSinceHighScore: 0
   drainSnake: {fileID: 926528388}
   playerTransform: {fileID: 0}
   snakeRenderer: {fileID: 926528389}
@@ -84558,3 +84621,4 @@ SceneRoots:
   - {fileID: 1022835522}
   - {fileID: 926528390}
   - {fileID: 2018842681}
+  - {fileID: 1318384593}
