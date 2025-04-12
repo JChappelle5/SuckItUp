@@ -26,7 +26,7 @@ public class PlayerRageEvents : MonoBehaviour
     private float bigClimbThreshold = 5f;
 
     // Frustration: 1..10; start high for beginners (8 gives supportive clips)
-    private float frustrationLevel = 8f;
+    public float frustrationLevel = 8f;
     public float FrustrationLevel => frustrationLevel;
 
     // Internal fall/landing state
@@ -36,9 +36,9 @@ public class PlayerRageEvents : MonoBehaviour
     private bool returnedToStartThisFall = false;
 
     private float highestPointBeforeFall;
-    private float lastHeightCheckpoint;
+    public float lastHeightCheckpoint;
     private float initialStartHeight;
-    private float highestHeightReached;
+    public float highestHeightReached;
 
     private float velocityThreshold = 0.1f;
     private float lastFallHeight = -9999f;
@@ -46,13 +46,13 @@ public class PlayerRageEvents : MonoBehaviour
     private float stuckTimer = 0f;
 
     // Track consecutive successful climbs
-    private int consecutiveNewHeightCount = 0;
+    public int consecutiveNewHeightCount = 0;
 
     // --- NEW: Timer for "No Falls" frustration relief ---
     [Tooltip("How many seconds without falling before first frustration decrease.")]
     public float initialNoFallWait = 30f; // starts at 30 sec
-    private float timeWithoutFall = 0f;
-    private float currentNoFallThreshold = 0f;
+    public float timeWithoutFall = 0f;
+    public float currentNoFallThreshold = 0f;
 
     // Events for Behavior Tree
     private bool bigFallEvent = false;

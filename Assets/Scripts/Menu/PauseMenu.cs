@@ -17,7 +17,8 @@ public class PauseMenu : MonoBehaviour
     private GameObject player;
     private PlungerMovement flingScript;
     public const string SAVE_FILENAME = "/savefile.json";
-    public SaveSystem saveSystem;
+    public GameObject saveSystem;
+    private SaveSystem saveSystemScript;
     public Vector2 spawnPosition = new Vector2(-21.908f, -4.362f); // Default spawn position
 
     void Start()
@@ -26,6 +27,7 @@ public class PauseMenu : MonoBehaviour
         isPaused = false; 
         player = GameObject.FindGameObjectWithTag("Player"); // Find the player object
         flingScript = player.GetComponent<PlungerMovement>(); // Get the PlayerScript component
+        saveSystemScript = saveSystem.GetComponent<SaveSystem>();
     }
 
     // Update is called once per frame
@@ -64,7 +66,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        saveSystem.SaveData(); // Save game before returning to menu
+        saveSystemScript.SaveData(); // Save game before returning to menu
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
@@ -72,7 +74,7 @@ public class PauseMenu : MonoBehaviour
     public void ResetGame()
     {
         Time.timeScale = 1f; // Resume game
-        saveSystem.SaveData(spawnPosition); // Save game at spawn position
+        saveSystemScript.SaveData(spawnPosition); // Save game at spawn position
         SceneManager.LoadScene(1); // Reload current scene
     }
 

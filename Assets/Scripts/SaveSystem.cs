@@ -9,17 +9,21 @@ public class SaveSystem : MonoBehaviour
     public Rigidbody2D rb;
     public Vector2 spawnPosition = new Vector2(-21.908f, -4.362f); // Default spawn position
     public GameObject stopwatch;
+    private Stopwatch timerScript; 
     private GameObject player;
-    private Stopwatch timerScript; // Reference to the Timer text
-    private Angel angelScript; // Reference to the Angel script
+    private Angel angelScript; 
+    public GameObject narratorAI;
+    private PlayerRageEvents narratorScript;
     private bool isQuitting = false;
     private bool hasSaved = false;
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player"); // Find the player object
+        // Find necessary objects/scripts
+        player = GameObject.FindGameObjectWithTag("Player");
         timerScript = stopwatch.GetComponent<Stopwatch>();
         angelScript = player.GetComponent<Angel>();
+        narratorScript = narratorAI.GetComponent<PlayerRageEvents>();
 
         // Check if save file exists, if not create one
         if(!File.Exists(Application.persistentDataPath + SAVE_FILENAME))
@@ -53,6 +57,16 @@ public class SaveSystem : MonoBehaviour
         model.fallChance = angelScript.cumulFallChance;
         model.highScoreTime = angelScript.timeSinceHighScore;
 
+        if(narratorScript != null)
+        {
+            model.frustrationLevel = narratorScript.frustrationLevel;
+            model.lastHeightChkpnt = narratorScript.lastHeightCheckpoint;
+            model.highestHeight = narratorScript.highestHeightReached;
+            model.timeNoFall = narratorScript.timeWithoutFall;
+            model.curNoFallThresh = narratorScript.currentNoFallThreshold;
+            model.consecNewHeight = narratorScript.consecutiveNewHeightCount;
+        }
+
         // Save file
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + SAVE_FILENAME, json);
@@ -72,10 +86,23 @@ public class SaveSystem : MonoBehaviour
         model.playerRotation = 0f;
         model.playerVelocity = Vector2.zero;
 
+        // Default time (0)
         model.timeElapsed = 0f;
 
+        // Default angel values
         model.fallChance = 0f;
         model.highScoreTime = 0f;
+
+        // Default narrator values
+        if(narratorScript != null)
+        {
+            model.frustrationLevel = 8f;
+            model.lastHeightChkpnt = -4.362f;
+            model.highestHeight = -4.362f;
+            model.timeNoFall = 0f;
+            model.curNoFallThresh = 0f;
+            model.consecNewHeight = 0;
+        }
 
         // Save file
         string json = JsonUtility.ToJson(model);
@@ -116,6 +143,16 @@ public class SaveSystem : MonoBehaviour
         angelScript.cumulFallChance = model.fallChance;
         angelScript.timeSinceHighScore = model.highScoreTime;
 
+        if(narratorScript != null)
+        {
+            narratorScript.frustrationLevel = model.frustrationLevel;
+            narratorScript.lastHeightCheckpoint = model.lastHeightChkpnt;
+            narratorScript.highestHeightReached = model.highestHeight;
+            narratorScript.timeWithoutFall = model.timeNoFall;
+            narratorScript.currentNoFallThreshold = model.curNoFallThresh;
+            narratorScript.consecutiveNewHeightCount = model.consecNewHeight;
+        }
+
         Debug.Log("Game loaded from " + Application.persistentDataPath + SAVE_FILENAME);
     }
 
@@ -132,15 +169,23 @@ public class SaveSystem : MonoBehaviour
 
 public class SaveModel
 {
-    // Player stats
+    // Player values
     public Vector2 playerPos;
     public Vector2 playerVelocity;
     public float playerRotation;
 
-    // Timer stats
+    // Timer value
     public float timeElapsed;
 
-    // Angel stats
+    // Angel values
     public float fallChance;
     public float highScoreTime;
+
+    // Narrator values
+    public float frustrationLevel;
+    public float lastHeightChkpnt;
+    public float highestHeight;
+    public float timeNoFall;
+    public float curNoFallThresh;
+    public int consecNewHeight;
 }

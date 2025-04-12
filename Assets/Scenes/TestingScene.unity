@@ -37299,7 +37299,7 @@ MonoBehaviour:
   resetMenu: {fileID: 1250855281}
   quitImage: {fileID: 1366674103}
   rb: {fileID: 5174926721603753804}
-  saveSystem: {fileID: 1318384592}
+  saveSystem: {fileID: 1318384591}
   spawnPosition: {x: -21.908, y: -4.362}
 --- !u!4 &917955191
 Transform:
@@ -75440,6 +75440,7 @@ MonoBehaviour:
   rb: {fileID: 5174926721603753804}
   spawnPosition: {x: -21.908, y: -4.362}
   stopwatch: {fileID: 2121990466}
+  narratorAI: {fileID: 611167210}
 --- !u!4 &1318384593
 Transform:
   m_ObjectHideFlags: 0
@@ -84535,7 +84536,13 @@ MonoBehaviour:
   significantProgressThreshold: 10
   stuckTimeThreshold: 30
   baseHeightCheckpointInterval: 1.5
+  frustrationLevel: 8
+  lastHeightCheckpoint: 0
+  highestHeightReached: 0
+  consecutiveNewHeightCount: 0
   initialNoFallWait: 30
+  timeWithoutFall: 0
+  currentNoFallThreshold: 0
 --- !u!50 &5174926721603753804 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 9220795257562847890, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
