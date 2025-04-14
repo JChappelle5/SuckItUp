@@ -66,7 +66,7 @@ public class PlayerRageEvents : MonoBehaviour
     // --- NEW: Skill test variables ---
     // If the player climbs 3 game meters within the first minute, they are considered skilled.
     private float startTime = 0f;
-    private bool skillTestPassed = false;
+    public bool skillTestPassed = false;
 
     void Start()
     {
