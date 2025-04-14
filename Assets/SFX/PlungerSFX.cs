@@ -2,18 +2,36 @@ using UnityEngine;
 
 public class PlungerSFX : MonoBehaviour
 {
-    public AudioSource audioSource;     // Where the SFX plays
-    public AudioClip launchSound;       // Plunger launch SFX
+    [Header("References")]
+    public PlungerMovement flingScript;         // Correct class name!
+    public Rigidbody2D playerRb;                // Player's Rigidbody2D
+    public AudioSource sfxSource;               // Audio source to play SFX
+    public AudioClip plungerLaunchClip;         // Your launch sound effect
+
+    [Header("Launch Detection")]
+    public float launchVelocityThreshold = 5f;
+
+    private bool wasCharging = false;
 
     void Update()
     {
-        // Because isCharging is static, qualify it with the class name (PlungerMovement).
-        if (Input.GetKeyUp(KeyCode.Space) && PlungerMovement.isCharging)
+        if (flingScript == null || playerRb == null) return;
+
+        bool isCharging = PlungerMovement.isCharging;
+
+        if (wasCharging && !isCharging && playerRb.linearVelocity.magnitude > launchVelocityThreshold)
         {
-            if (launchSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(launchSound);
-            }
+            PlayLaunchSFX();
+        }
+
+        wasCharging = isCharging;
+    }
+
+    void PlayLaunchSFX()
+    {
+        if (sfxSource != null && plungerLaunchClip != null)
+        {
+            sfxSource.PlayOneShot(plungerLaunchClip);
         }
     }
 }

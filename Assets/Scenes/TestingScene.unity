@@ -76806,7 +76806,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.08
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -76902,8 +76902,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d5698e82e130da4c9c8f840b5c1941b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 1354561526}
-  launchSound: {fileID: 8300000, guid: beaf2225d3baf4340ae783735f8f86b3, type: 3}
+  flingScript: {fileID: 566081610}
+  playerRb: {fileID: 5174926721603753804}
+  sfxSource: {fileID: 1354561526}
+  plungerLaunchClip: {fileID: 8300000, guid: 4e161f9ba75efc5479e8a5738daab460, type: 3}
+  launchVelocityThreshold: 5
 --- !u!4 &1354561528
 Transform:
   m_ObjectHideFlags: 0
