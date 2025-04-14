@@ -26,7 +26,9 @@ public class Angel : MonoBehaviour
     public float wrapFrameDelay = 0.05f;
     public PlungerMovement spriteControllerScript;
     bool angelTriggeredThisFall = false;
-
+    public Transform currentPlatform;
+    public bool isOnMovingPlatform = false;
+    public bool canSavePosition = true;
 
 
     void Start()
@@ -86,14 +88,13 @@ public class Angel : MonoBehaviour
 
             resetSaveTimer += Time.deltaTime;
 
-            if (resetSaveTimer >= saveTracker)
+            if (resetSaveTimer >= saveTracker && !isOnMovingPlatform && canSavePosition)
             {
                 SavePosition(transform.position);
                 resetSaveTimer = 0f;
             }
         }
     }
-
 
     void fallDistance(int start, int end)
     {
@@ -134,7 +135,7 @@ public class Angel : MonoBehaviour
         }
 
         float totalFallChance = currFallChance + cumulFallChance + timeChance; //sums the chance
-        int randomNumGen = Random.Range(10, 90); //rolls 10-90 and compare the "chance" to the rng
+        int randomNumGen = Random.Range(1, 100); //rolls 1-100 and compare the "chance" to the rng
 
         Debug.Log(currFallChance + " " + timeChance + " " + cumulFallChance + " " + totalFallChance + " compared to " + randomNumGen);
         if (totalFallChance >= randomNumGen)
@@ -167,6 +168,38 @@ public class Angel : MonoBehaviour
         PlayerPrefs.SetFloat("posZ", position.z);
         PlayerPrefs.Save();
     }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if the other object has a PlatformMovement script
+        if (collision.gameObject.GetComponent<PlatformMovement>() != null)
+        {
+            isOnMovingPlatform = true;
+            currentPlatform = collision.transform;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<PlatformMovement>() != null)
+        {
+            if (collision.transform == currentPlatform)
+            {
+                currentPlatform = null;
+                isOnMovingPlatform = false;
+
+                StartCoroutine(EnableSavingAfterDelay(0.5f));
+            }
+        }
+    }
+
+    IEnumerator EnableSavingAfterDelay(float delay)
+    {
+        canSavePosition = false;
+        yield return new WaitForSeconds(delay);
+        canSavePosition = true;
+    }
+
 
     IEnumerator SnakePickupSequence()
     {

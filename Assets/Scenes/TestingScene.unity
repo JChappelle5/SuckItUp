@@ -76517,7 +76517,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1318384592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86274,6 +86274,9 @@ MonoBehaviour:
   - {fileID: -1623319088150407854, guid: 7bc5799652e32774cbd729e0f5a13fa1, type: 3}
   wrapFrameDelay: 0.05
   spriteControllerScript: {fileID: 566081610}
+  currentPlatform: {fileID: 0}
+  isOnMovingPlatform: 0
+  canSavePosition: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
