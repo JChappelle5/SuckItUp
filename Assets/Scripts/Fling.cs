@@ -104,6 +104,10 @@ public class PlungerMovement : MonoBehaviour
                     stickTime = 3f;
                 }
             }
+            if(isOnSlime)
+            {
+                transform.position += Vector3.down * Time.deltaTime * .8f;
+            }
         }
     }
 
@@ -117,11 +121,6 @@ public class PlungerMovement : MonoBehaviour
         else if(!isCurrentlyGrounded && !isStickingToWall)
         {
             HandleAirRotation();
-        }
-
-        if(isStickingToWall && isOnSlime)
-        {
-            rb.AddForce(Vector2.down * 1.5f, ForceMode2D.Force);
         }
     }
 
