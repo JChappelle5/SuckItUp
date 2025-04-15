@@ -11634,6 +11634,7 @@ MonoBehaviour:
   playerRageEvents: {fileID: 5174926721603753803}
   narratorManager: {fileID: 543107573}
   frustrationThreshold: 5
+  bigFallCooldown: 5
 --- !u!4 &611167212
 Transform:
   m_ObjectHideFlags: 0
@@ -89733,11 +89734,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.4
+      value: -22.59
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 178.11
+      value: -4.29
       objectReference: {fileID: 0}
     - target: {fileID: 7903416305280632420, guid: 7bfbc8bab0838da4dbbd36381fe21fbd, type: 3}
       propertyPath: m_LocalPosition.z

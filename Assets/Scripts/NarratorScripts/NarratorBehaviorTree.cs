@@ -12,6 +12,10 @@ public class NarratorBehaviorTree : MonoBehaviour
     [Header("Frustration Threshold")]
     public float frustrationThreshold = 5f;
 
+    [Header("Cooldown Settings")]
+    public float bigFallCooldown = 8f;
+    private float lastBigFallTime = -Mathf.Infinity;
+
     void Start()
     {
         behaviorTree = new Root(
@@ -37,17 +41,22 @@ public class NarratorBehaviorTree : MonoBehaviour
     {
         behaviorTree.Blackboard["bigFall"] = playerRageEvents.BigFallEvent;
         behaviorTree.Blackboard["repeatedFalls"] = playerRageEvents.RepeatedFallEvent;
-        behaviorTree.Blackboard["newHeight"] = playerRageEvents.NewHeightEvent; // <-- Directly use the new height event flag
+        behaviorTree.Blackboard["newHeight"] = playerRageEvents.NewHeightEvent;
     }
 
     void PlayBigFallAudio()
     {
-        narratorManager.PlayClipBasedOnFrustration(
-            narratorManager.bigFallLowFrustration,
-            narratorManager.bigFallMediumFrustration,
-            narratorManager.bigFallHighFrustration,
-            playerRageEvents.FrustrationLevel
-        );
+        if (Time.time - lastBigFallTime >= bigFallCooldown)
+        {
+            narratorManager.PlayClipBasedOnFrustration(
+                narratorManager.bigFallLowFrustration,
+                narratorManager.bigFallMediumFrustration,
+                narratorManager.bigFallHighFrustration,
+                playerRageEvents.FrustrationLevel
+            );
+            lastBigFallTime = Time.time;
+        }
+
         playerRageEvents.ResetBigFallEvent();
         behaviorTree.Blackboard["bigFall"] = false;
     }

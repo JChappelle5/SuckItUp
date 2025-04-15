@@ -114,6 +114,14 @@ public class PlayerRageEvents : MonoBehaviour
                 returnedToStartThisFall = true;
             }
 
+            // 2.1.1) Reset lastHeightCheckpoint if fall was large (≥ 3m game meters)
+            if (fallDistanceMeters >= 3f)
+            {
+                lastHeightCheckpoint = currentHeight;
+                Debug.Log("Last height checkpoint reset due to large fall.");
+            }
+
+
             // 2.2) Tiered frustration for falls: >3m, >6m, >9m
             bigFallEvent = false; // reset before setting it true
             if (fallDistanceMeters > 9f)
