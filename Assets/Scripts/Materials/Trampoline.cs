@@ -13,7 +13,7 @@ public class Trampoline : MonoBehaviour
         {
             Vector2 playerVelocity = collision.relativeVelocity; // Get velocity at point of collision
 
-            bounceForce = new Vector2(playerVelocity.x * 2f, Mathf.Abs(playerVelocity.magnitude) * 0.85f); // Calculate bounce force based on relative velocity
+            bounceForce = new Vector2(playerVelocity.x * 4f, Mathf.Abs(playerVelocity.magnitude) * 0.95f); // Calculate bounce force based on relative velocity
 
             collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse); // Apply bounce force to player
         }
