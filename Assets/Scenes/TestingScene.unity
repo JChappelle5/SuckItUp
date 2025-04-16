@@ -125270,6 +125270,8 @@ MonoBehaviour:
   isOnMovingPlatform: 0
   canSavePosition: 1
   isCarryingPlayer: 0
+  isOnGround: 0
+  flingScript: {fileID: 566081610}
 --- !u!1001 &7819070452662138863
 PrefabInstance:
   m_ObjectHideFlags: 0

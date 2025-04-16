@@ -275,7 +275,7 @@ public class PlungerMovement : MonoBehaviour
     }
 
     //  Ground Detection Using OverlapCircle
-    bool IsGrounded()
+    public bool IsGrounded()
     {
         Collider2D hit = Physics2D.OverlapCircle(bottomDetector.position, groundCheckRadius, stickableSurfaceLayer);
         Collider2D slimeHit = Physics2D.OverlapCircle(bottomDetector.position, groundCheckRadius, slimeLayer);

@@ -31,7 +31,8 @@ public class Angel : MonoBehaviour
     public bool canSavePosition = true;
     public bool isCarryingPlayer = false;
 
-
+    public bool isOnGround;
+    public PlungerMovement flingScript;
 
     void Start()
     {
@@ -77,12 +78,14 @@ public class Angel : MonoBehaviour
 
             resetSaveTimer += Time.deltaTime;
 
-            if (resetSaveTimer >= saveTracker && !isOnMovingPlatform && canSavePosition)
+            if (resetSaveTimer >= saveTracker && !isOnMovingPlatform && canSavePosition && isOnGround)
             {
                 SavePosition(transform.position);
                 resetSaveTimer = 0f;
             }
         }
+
+        checkOnFloor();
     }
 
     void fallDistance(int start, int end)
@@ -152,6 +155,7 @@ public class Angel : MonoBehaviour
     void SavePosition(Vector3 position)
     {
         //save players position
+        Debug.Log("hi");
         PlayerPrefs.SetFloat("posX", position.x);
         PlayerPrefs.SetFloat("posY", position.y);
         PlayerPrefs.SetFloat("posZ", position.z);
@@ -177,7 +181,22 @@ public class Angel : MonoBehaviour
                 currentPlatform = null;
                 isOnMovingPlatform = false;
 
-                StartCoroutine(EnableSavingAfterDelay(0.5f));
+                StartCoroutine(EnableSavingAfterDelay(0.25f));
+            }
+        }
+    }
+
+    private void checkOnFloor()
+    {
+        float rotation = playerRb.rotation % 360;
+        if(flingScript.IsGrounded())
+        {
+            if (((rotation > -15 && rotation < 15) || (rotation > 345 && rotation < 360) || (rotation > -360 && rotation < -345)) && flingScript.IsGrounded() && playerRb.linearVelocity.magnitude < 0.01f) // on ground
+            {
+                isOnGround = true;
+            }
+            else{
+                isOnGround = false;
             }
         }
     }
