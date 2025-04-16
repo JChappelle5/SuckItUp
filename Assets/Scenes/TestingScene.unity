@@ -11585,6 +11585,7 @@ MonoBehaviour:
   playerRageEvents: {fileID: 5174926721603753803}
   narratorManager: {fileID: 543107573}
   frustrationThreshold: 5
+  bigFallCooldown: 8
 --- !u!4 &611167212
 Transform:
   m_ObjectHideFlags: 0
