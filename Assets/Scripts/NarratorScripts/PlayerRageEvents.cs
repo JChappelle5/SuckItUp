@@ -325,4 +325,16 @@ public class PlayerRageEvents : MonoBehaviour
             $"Consecutive new heights: {consecutiveNewHeightCount}. Frustration: {frustrationLevel}"
         );
     }
+
+    //Used to determine if we should activate wind or floating enemy
+    public bool IsPlayerDoingTooGood()
+    {
+        return
+            frustrationLevel <= 3f &&          // Low frustration
+            consecutiveNewHeightCount >= 3 &&  // Repeated success
+            timeWithoutFall >= 10f;            // No recent falls
+    }
+
+
+
 }

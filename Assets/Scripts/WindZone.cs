@@ -7,7 +7,7 @@ public class WindZone : MonoBehaviour
     public Vector2 windDirection = new Vector2(1f, 0.25f);
     public float range = 3f;
 
-    public bool isActive = false;        // Set by manager
+    public bool isActive = false;        
     public bool IsBlowing => isBlowing;
     private bool isBlowing = false;
 
@@ -59,24 +59,22 @@ public class WindZone : MonoBehaviour
         {
             if (isActive)
             {
-                // Blow for a while
                 isBlowing = true;
                 float blowTime = Random.Range(minBlowDuration, maxBlowDuration);
                 yield return new WaitForSeconds(blowTime);
 
-                // Pause
                 isBlowing = false;
                 float pauseTime = Random.Range(minPauseDuration, maxPauseDuration);
                 yield return new WaitForSeconds(pauseTime);
             }
             else
             {
-                // If inactive, don't blow
                 isBlowing = false;
-                yield return null;
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }
+
 
     void OnDrawGizmosSelected()
     {

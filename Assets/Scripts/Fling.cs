@@ -436,7 +436,7 @@ public class PlungerMovement : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
-    private void unstickPlayer()
+    public void unstickPlayer()
     {
         isStickingToWall = false;
         isOnSlime = false;
