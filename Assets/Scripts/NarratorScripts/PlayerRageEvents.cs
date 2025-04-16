@@ -330,8 +330,8 @@ public class PlayerRageEvents : MonoBehaviour
     public bool IsPlayerDoingTooGood()
     {
         return
-            frustrationLevel <= 3f &&          // Low frustration
-            consecutiveNewHeightCount >= 3 &&  // Repeated success
+            frustrationLevel <= 2f &&        // Low frustration
+            consecutiveNewHeightCount >= 1 &&  // Repeated success
             timeWithoutFall >= 10f;            // No recent falls
     }
 

@@ -7,9 +7,17 @@ public class CameraZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log($"[CameraZone] Something entered: {other.name}");
         if (other.CompareTag("Player"))
         {
             Debug.Log("Entered camera zone: " + name);
+            CameraController.Instance.MoveToPosition(cameraPosition, transitionTime);
+        }
+
+        Angel snake = other.GetComponent<Angel>();
+        if (snake != null && snake.isCarryingPlayer)
+        {
+            Debug.Log("Drain snake entered camera zone while carrying player: " + name);
             CameraController.Instance.MoveToPosition(cameraPosition, transitionTime);
         }
     }

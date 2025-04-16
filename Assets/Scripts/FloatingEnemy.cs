@@ -18,12 +18,6 @@ public class FloatingEnemy : MonoBehaviour
 
     public float attackRange = 10f;
 
-
-    /// <summary>
-    /// //////////////////////////////////////////////
-    /// </summary>
-
-
     [Header("Wander Area")]
     public Vector2 areaCenter;
     public float areaRadius = 5f;
@@ -165,92 +159,4 @@ public class FloatingEnemy : MonoBehaviour
 }
 
 
-/// <summary>
-/// /////////////////////////////////////
-/// </summary>
 
-//    void Start()
-//    {
-//        anim = GetComponent<Animator>();
-//        player = GameObject.FindWithTag("Player").transform; 
-//        isActive = true;
-//    }
-
-//    void Update()
-//    {
-//        if (!isActive) return;
-
-//        Move();
-//        HandleAttack();
-//        FacePlayer();
-//    }
-
-//    void Move()
-//    {
-//        anim.SetBool("isMoving", true);
-
-//        Transform target = patrolPoints[currentPoint];
-//        transform.position = Vector2.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
-
-//        if (Vector2.Distance(transform.position, target.position) < 0.1f)
-//        {
-//            currentPoint = (currentPoint + 1) % patrolPoints.Length;
-//        }
-//    }
-
-//    void HandleAttack()
-//    {
-//        if (player == null) return;
-
-//        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-//        // Don't attack if player is out of range
-//        if (distanceToPlayer > attackRange) return;
-
-//        attackTimer -= Time.deltaTime;
-
-//        if (attackTimer <= 0f)
-//        {
-//            anim.SetTrigger("attack");
-//            attackTimer = attackCooldown;
-//        }
-//    }
-
-
-//    // Called from Animation Event at the right moment during the attack animation
-//    public void FireProjectile()
-//    {
-//        GameObject proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-//        Vector2 direction = (player.position - firePoint.position).normalized;
-//        proj.GetComponent<EnemyProjectile>().Launch(direction);
-//    }
-
-
-//    // Call this from your DifficultyManager or wherever you track progress
-//    public void SetActive(bool value)
-//    {
-//        isActive = value;
-//    }
-
-
-//    void FacePlayer()
-//    {
-//        if (player == null) return;
-
-//        Vector3 scale = transform.localScale;
-
-//        if (player.position.x > transform.position.x)
-//            scale.x = -Mathf.Abs(scale.x); // Face right (flip)
-//        else
-//            scale.x = Mathf.Abs(scale.x);  // Face left (default)
-
-//        transform.localScale = scale;
-//    }
-
-//    void OnDrawGizmosSelected()
-//    {
-//        Gizmos.color = Color.red;
-//        Gizmos.DrawWireSphere(transform.position, attackRange);
-//    }
-
-//}

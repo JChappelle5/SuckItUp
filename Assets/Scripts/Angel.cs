@@ -29,6 +29,8 @@ public class Angel : MonoBehaviour
     public Transform currentPlatform;
     public bool isOnMovingPlatform = false;
     public bool canSavePosition = true;
+    public bool isCarryingPlayer = false;
+
 
 
     void Start()
@@ -213,7 +215,7 @@ public class Angel : MonoBehaviour
         spriteControllerScript.enabled = false;
 
         // Snake comes down
-        drainSnake.transform.position = transform.position + new Vector3(0, 12f, 0);
+        drainSnake.transform.position = transform.position + new Vector3(0, 18f, 0);
 
         while (true)
         {
@@ -231,11 +233,12 @@ public class Angel : MonoBehaviour
 
             yield return null;
         }
-
+        isCarryingPlayer = true;
         playerTransform.rotation = Quaternion.identity;
         transform.SetParent(drainSnake.transform);
         playerRb.simulated = false;
         StopSwing();
+        
 
         yield return StartCoroutine(PlayWrapUpAnimation());
 
@@ -256,8 +259,10 @@ public class Angel : MonoBehaviour
         transform.position = savedPos;
         playerRb.simulated = true;
         playerRb.linearVelocity = Vector2.zero;
+        isCarryingPlayer = false;
 
-        yield return StartCoroutine(PlayUnwrapAnimation());
+
+    yield return StartCoroutine(PlayUnwrapAnimation());
 
         // Snake exits upward
         float exitDistance = 20f;
