@@ -52,19 +52,6 @@ public class Angel : MonoBehaviour
             angelTriggeredThisFall = false;
         }
 
-        // MID-FALL CHECK (new!)
-        if (isFalling && !angelTriggeredThisFall)
-        {
-            int currentHeight = Mathf.FloorToInt(playerRb.position.y / 5.235f);
-            int fallDistanceSoFar = fallHeight - currentHeight;
-
-            if (fallDistanceSoFar >= 5) // only if falling more than 5m
-            {
-                angelTriggeredThisFall = true;
-                angelTriggerChance(fallDistanceSoFar); // can instantly trigger the snake
-            }
-        }
-
         // END FALL
         if (isFalling && verticalVelocity >= 0f)
         {
