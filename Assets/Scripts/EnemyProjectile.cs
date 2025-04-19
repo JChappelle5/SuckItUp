@@ -50,11 +50,11 @@ public class EnemyProjectile : MonoBehaviour
 
             if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
             {
-                Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
+                knockbackDirection = (other.transform.position - transform.position).normalized;
             }
             else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
             {
-                Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
+                knockbackDirection = (other.transform.position - transform.position).normalized;
             }
             else
             {
