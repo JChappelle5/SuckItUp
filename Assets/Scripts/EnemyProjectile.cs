@@ -45,21 +45,7 @@ public class EnemyProjectile : MonoBehaviour
 
             // Knockback
             Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
-
-            float rotation = rb.rotation % 360;
-
-            if ((rotation > 240 && rotation < 300) || (rotation < -60 && rotation > -120)) // on right wall
-            {
-                knockbackDirection = (other.transform.position - transform.position).normalized;
-            }
-            else if ((rotation > 60 && rotation < 120) || (rotation < -240 && rotation > -300)) // on left wall
-            {
-                knockbackDirection = (other.transform.position - transform.position).normalized;
-            }
-            else
-            {
-                knockbackDirection = new Vector2(knockbackDirection.x, 0).normalized; // only horizontal so they can get hit from above if not on wall
-            }
+            knockbackDirection = new Vector2(knockbackDirection.x, 0).normalized; // only horizontal so they can get hit from above
 
             float knockbackForce = 10f; // tweak this as needed
 
