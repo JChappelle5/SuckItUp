@@ -15,7 +15,8 @@ public class SaveSystem : MonoBehaviour
     public GameObject narratorAI;
     private PlayerRageEvents narratorScript;
     private bool isQuitting = false;
-    private bool hasSaved = false;
+    public bool hasSaved = false;
+    public VolumeSettings volumeSettings;
 
     void Start()
     {
@@ -25,10 +26,13 @@ public class SaveSystem : MonoBehaviour
         angelScript = player.GetComponent<Angel>();
         narratorScript = narratorAI.GetComponent<PlayerRageEvents>();
 
+        bool firstTimeLaunch = false;
+
         // Check if save file exists, if not create one
         if(!File.Exists(Application.persistentDataPath + SAVE_FILENAME))
         {
-            SaveData(spawnPosition);
+            firstTimeLaunch = true;
+            SaveData(spawnPosition, firstTimeLaunch);
             LoadData();
         }
         else
@@ -52,10 +56,14 @@ public class SaveSystem : MonoBehaviour
         model.playerRotation = rb.rotation;
         model.playerVelocity = rb.linearVelocity;
         
-        model.timeElapsed = timerScript.timeElapsed; 
+        if(timerScript != null)
+            model.timeElapsed = timerScript.timeElapsed; 
 
-        model.fallChance = angelScript.cumulFallChance;
-        model.highScoreTime = angelScript.timeSinceHighScore;
+        if(angelScript != null)
+        {
+            model.fallChance = angelScript.cumulFallChance;
+            model.highScoreTime = angelScript.timeSinceHighScore;
+        }
 
         if(narratorScript != null)
         {
@@ -67,6 +75,14 @@ public class SaveSystem : MonoBehaviour
             model.consecNewHeight = narratorScript.consecutiveNewHeightCount;
         }
 
+        if(volumeSettings != null)
+        {
+            model.masterVolume = volumeSettings.masterSlider.value;
+            model.musicVolume = volumeSettings.musicSlider.value;
+            model.sfxVolume = volumeSettings.sfxSlider.value;
+            model.narratorVolume = volumeSettings.narratorSlider.value;
+        }
+
         // Save file
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + SAVE_FILENAME, json);
@@ -74,7 +90,7 @@ public class SaveSystem : MonoBehaviour
     }
 
     // Save data on reset specifically
-    public void SaveData(Vector2 position)
+    public void SaveData(Vector2 position, bool firstTimeLaunch)
     {
         // Prevents saving again if already saved
         if(hasSaved) return; 
@@ -103,8 +119,23 @@ public class SaveSystem : MonoBehaviour
             model.curNoFallThresh = 0f;
             model.consecNewHeight = 0;
         }
+        
+        if(!firstTimeLaunch && volumeSettings != null)
+        {
+            model.masterVolume = volumeSettings.masterSlider.value;
+            model.musicVolume = volumeSettings.musicSlider.value;
+            model.sfxVolume = volumeSettings.sfxSlider.value;
+            model.narratorVolume = volumeSettings.narratorSlider.value;
+        }
+        else
+        {
+            model.masterVolume = 1f;
+            model.musicVolume = 1f;
+            model.sfxVolume = 1f;
+            model.narratorVolume = 1f;
+        }
 
-        // Save file
+        // Save filea
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + SAVE_FILENAME, json);
         Debug.Log("Game saved to " + Application.persistentDataPath + SAVE_FILENAME);
@@ -153,6 +184,16 @@ public class SaveSystem : MonoBehaviour
             narratorScript.consecutiveNewHeightCount = model.consecNewHeight;
         }
 
+        volumeSettings.masterSlider.value = model.masterVolume;
+        volumeSettings.musicSlider.value = model.musicVolume;
+        volumeSettings.sfxSlider.value = model.sfxVolume;
+        volumeSettings.narratorSlider.value = model.narratorVolume;
+
+        volumeSettings.SetMasterVolume(model.masterVolume);
+        volumeSettings.SetMusicVolume(model.musicVolume);
+        volumeSettings.SetSFXVolume(model.sfxVolume);
+        volumeSettings.SetNarratorVolume(model.narratorVolume);
+
         Debug.Log("Game loaded from " + Application.persistentDataPath + SAVE_FILENAME);
     }
 
@@ -188,4 +229,10 @@ public class SaveModel
     public float timeNoFall;
     public float curNoFallThresh;
     public int consecNewHeight;
+
+    // Settings Values
+    public float masterVolume;
+    public float musicVolume;
+    public float sfxVolume;
+    public float narratorVolume;
 }

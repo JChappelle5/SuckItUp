@@ -66,6 +66,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMenu()
     {
+        saveSystemScript.hasSaved = false;
         saveSystemScript.SaveData(); // Save game before returning to menu
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
@@ -74,7 +75,8 @@ public class PauseMenu : MonoBehaviour
     public void ResetGame()
     {
         Time.timeScale = 1f; // Resume game
-        saveSystemScript.SaveData(spawnPosition); // Save game at spawn position
+        saveSystemScript.hasSaved = false;
+        saveSystemScript.SaveData(spawnPosition, false); // Save game at spawn position
         SceneManager.LoadScene(1); // Reload current scene
     }
 
