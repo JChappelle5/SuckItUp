@@ -2,87 +2,119 @@
 using UnityEngine;
 
 /// <summary>
-/// Watches the player’s height (via HeightTracker) and
-/// cross‑fades music when the zone changes.
+/// Listens to <see cref="HeightTracker"/> and changes music whenever the
+/// player crosses a zone boundary, using short fades instead of hard cuts.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class ZoneMusicManager : MonoBehaviour
 {
+    // ───────────────────────────── data struct ──────────────────────────────
     [System.Serializable]
     public struct ZoneMusic
     {
-        public AudioClip transition;   // one‑shot stinger (optional)
-        public AudioClip loop;         // main loop (required)
+        public AudioClip transition;   // optional one‑shot “stinger”
+        public AudioClip loop;         // mandatory looping track
     }
 
+    // ───────────────────────── Inspector fields ─────────────────────────────
     [Header("References")]
-    public HeightTracker heightTracker;    // drag the HeightTracker from the scene
-    public AudioSource musicSource;        // same GameObject, set Loop = true in Inspector
+    public HeightTracker heightTracker;        // drag from the scene
+    public AudioSource musicSource;          // same GO, “Loop” ON
 
     [Header("Zone Setup")]
-    [Tooltip("Meters at which each new zone begins — must be ascending!")]
-    public float[] zoneBoundaries = { 0f, 30f, 60f };   // 0‑29.9 = zone‑0, 30‑59.9 = zone‑1, etc.
+    [Tooltip("Meter values where each zone BEGINS (ascending order!).")]
+    public float[] zoneBoundaries = { 0f, 11f, 25f };
 
-    [Tooltip("Music for each zone (array size must match zoneBoundaries length)")]
+    [Tooltip("Music for each zone (array length must equal zoneBoundaries).")]
     public ZoneMusic[] zoneMusic;
 
-    // ––––––––––––––––––––––––––––––––––––––––––––––––
+    [Header("Fade Settings")]
+    [Tooltip("Seconds for fade‑out + fade‑in.")]
+    [Range(0f, 5f)] public float fadeSeconds = 0.75f;
 
-    int currentZone = -1;        // “–1” forces first StartMusic call
+    // ───────────────────────── internal state ───────────────────────────────
+    int currentZone = -1;        // –1 forces first play
     Coroutine swapRoutine;
 
+    // ───────────────────────── Unity life‑cycle ─────────────────────────────
     void Start()
     {
         if (musicSource == null) musicSource = GetComponent<AudioSource>();
-        musicSource.loop = true;                     // loops for main tracks
-        UpdateZone(forceInstant: true);              // start immediately
+        musicSource.loop = true;
+
+        // Start zone‑0 immediately (hard cut at launch only)
+        ChangeMusic(GetZoneIndex(heightTracker.GetCurrentMeters()), forceCut: true);
     }
 
     void Update()
     {
-        UpdateZone(forceInstant: false);             // poll every frame
+        int zone = GetZoneIndex(heightTracker.GetCurrentMeters());
+        if (zone != currentZone && swapRoutine == null)
+            swapRoutine = StartCoroutine(ChangeMusicRoutine(zone));
     }
 
-    // ------------------------------------------------
-    void UpdateZone(bool forceInstant)
-    {
-        int newZone = GetZoneIndex(heightTracker.GetCurrentMeters());
-
-        if (newZone == currentZone) return;           // still in same zone
-
-        if (swapRoutine != null) StopCoroutine(swapRoutine);
-        swapRoutine = StartCoroutine(ChangeMusicRoutine(newZone, forceInstant));
-    }
-
+    // ───────────────────────── helpers ──────────────────────────────────────
     int GetZoneIndex(float meters)
     {
-        // zoneBoundaries[i] is the FIRST meter value that belongs to zone i
         for (int i = zoneBoundaries.Length - 1; i >= 0; i--)
             if (meters >= zoneBoundaries[i]) return i;
-
-        return 0; // shouldn’t happen
+        return 0;
     }
 
-    IEnumerator ChangeMusicRoutine(int targetZone, bool instant)
+    void ChangeMusic(int targetZone, bool forceCut)
     {
-        // Step 1 – let the currently playing loop finish (unless this is the first time or “instant”)
-        if (!instant && musicSource.isPlaying)
-            yield return new WaitWhile(() => musicSource.isPlaying);
+        if (forceCut && musicSource.isPlaying) musicSource.Stop();
 
-        // Step 2 – play transition clip if one exists
-        AudioClip trans = zoneMusic[targetZone].transition;
-        if (trans != null)
+        // Play transition (ascending only)
+        if (targetZone > currentZone && zoneMusic[targetZone].transition != null)
+            musicSource.PlayOneShot(zoneMusic[targetZone].transition);
+
+        // Start new loop
+        musicSource.clip = zoneMusic[targetZone].loop;
+        musicSource.loop = true;
+        musicSource.Play();
+
+        currentZone = targetZone;
+    }
+
+    IEnumerator ChangeMusicRoutine(int targetZone)
+    {
+        bool ascending = targetZone > currentZone;
+
+        /* 1) fade‑out current loop (if any) */
+        if (musicSource.isPlaying)
+        {
+            float startVol = musicSource.volume;
+            for (float t = 0; t < fadeSeconds; t += Time.unscaledDeltaTime)
+            {
+                musicSource.volume = Mathf.Lerp(startVol, 0f, t / fadeSeconds);
+                yield return null;
+            }
+            musicSource.Stop();
+            musicSource.volume = startVol;               // restore for later
+        }
+
+        /* 2) play transition stinger if we’re climbing up */
+        if (ascending && zoneMusic[targetZone].transition != null)
         {
             musicSource.loop = false;
-            musicSource.clip = trans;
+            musicSource.clip = zoneMusic[targetZone].transition;
             musicSource.Play();
             yield return new WaitWhile(() => musicSource.isPlaying);
         }
 
-        // Step 3 – switch to the main loop for the new zone
+        /* 3) fade‑in the new loop */
         musicSource.loop = true;
         musicSource.clip = zoneMusic[targetZone].loop;
+        musicSource.volume = 0f;                         // start silent
         musicSource.Play();
+
+        for (float t = 0; t < fadeSeconds; t += Time.unscaledDeltaTime)
+        {
+            musicSource.volume = Mathf.Lerp(0f, 0.2f, t / fadeSeconds);
+            yield return null;
+        }
+        musicSource.volume = 0.2f;                         // ensure full volume
 
         currentZone = targetZone;
         swapRoutine = null;

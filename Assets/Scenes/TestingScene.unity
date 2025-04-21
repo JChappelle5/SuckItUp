@@ -10574,7 +10574,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4795109c3a6e48543a935e420c52e4dc, type: 3}
   newHeightLowFrustration:
   - {fileID: 8300000, guid: a6d9205cbd211304283684e234602390, type: 3}
-  - {fileID: 8300000, guid: 6b1f4e0feb4d57e4094efff8542d3284, type: 3}
   - {fileID: 8300000, guid: 9876ae3f12e682e48845411e2ed54fc8, type: 3}
   - {fileID: 8300000, guid: ebad65389cf1b0346bf3dbc64ea2fe86, type: 3}
   - {fileID: 8300000, guid: 60bf6a5c053cb7546b9e8c842cbdd65e, type: 3}
@@ -136199,19 +136198,16 @@ MonoBehaviour:
   musicSource: {fileID: 2130609108}
   zoneBoundaries:
   - 0
-  - 11
-  - 25
+  - 21
+  - 34
   zoneMusic:
   - transition: {fileID: 0}
     loop: {fileID: 8300000, guid: 0adfc371ceacf964a955ad88cf6dda72, type: 3}
   - transition: {fileID: 8300000, guid: 1477e20ce0960db449f2f2165ffcd91c, type: 3}
-    loop: {fileID: 8300000, guid: ff6c3747f69a7534c975ff9c4c1d66e7, type: 3}
-  - transition: {fileID: 8300000, guid: 3a3f132fd69b8d1478f0cf9ab581b29d, type: 3}
     loop: {fileID: 8300000, guid: 5e9cc116f8bd0f548860208092c57025, type: 3}
-  - transition: {fileID: 0}
-    loop: {fileID: 0}
-  - transition: {fileID: 0}
-    loop: {fileID: 0}
+  - transition: {fileID: 8300000, guid: 3a3f132fd69b8d1478f0cf9ab581b29d, type: 3}
+    loop: {fileID: 8300000, guid: ff6c3747f69a7534c975ff9c4c1d66e7, type: 3}
+  fadeSeconds: 3
 --- !u!82 &2130609108
 AudioSource:
   m_ObjectHideFlags: 0
