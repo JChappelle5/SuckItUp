@@ -50,8 +50,9 @@ public class WindZone : MonoBehaviour
 
     private bool PlayerInRange()
     {
-        return Mathf.Abs(player.position.y - transform.position.y) < range;
+        return Vector2.Distance(player.position, transform.position) < range;
     }
+
 
     private IEnumerator WindCycleRoutine()
     {

@@ -17,7 +17,6 @@ public class AdaptiveDifficultyController : MonoBehaviour
 
     void Update()
     {
-
         if (rageEvents.IsPlayerDoingTooGood())
         {
             if (!hardModeActivated)

@@ -13,6 +13,7 @@ public class TestTriggerScript : MonoBehaviour
         if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
             tutorialPopup.SetActive(true);
+            Time.timeScale = 0f;
         }
 
         // Check if the player presses Space
@@ -21,6 +22,7 @@ public class TestTriggerScript : MonoBehaviour
             Debug.Log("Space pressed! Closing tutorial popup.");
             interactionPrompt.SetActive(false);  // Hide the popup
             tutorialPopup.SetActive(false);
+            Time.timeScale = 1f;
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
