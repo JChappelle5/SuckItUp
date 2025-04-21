@@ -124,6 +124,11 @@ public class PlungerMovement : MonoBehaviour
             {
                 transform.position += Vector3.down * Time.deltaTime * .8f;
             }
+            if (isStickingToWall && !Input.GetKey(KeyCode.Space))
+            {
+                unstickPlayer();
+            }
+
         }
     }
 
@@ -324,7 +329,7 @@ public class PlungerMovement : MonoBehaviour
 
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isRotatedOnWall() && Input.GetKeyDown(KeyCode.Space))
+                if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, slimeLayer) && isRotatedOnWall() && Input.GetKey(KeyCode.Space))
                 {
                     StickToSlime();
                     break;
@@ -366,18 +371,18 @@ public class PlungerMovement : MonoBehaviour
                     TimerOn = true;
                 }
             }
-            else if (isStickingToWall)
+            else if (isOnSlime && !Input.GetKey(KeyCode.Space))
             {
-                // Lost proper wall contact
                 unstickPlayer();
             }
+
         }
         else if (((1 << collision.gameObject.layer) & stickableSurfaceLayer) != 0)
         {
             // Checks if player is touching/rotated on wall
             if (Physics2D.OverlapCircle(bottomDetector.position, wallCheckRadius, stickableSurfaceLayer) && isRotatedOnWall())
             {
-                if (Input.GetKey(KeyCode.Space) && !isStickingToWall) // if holding space stick to wall
+                if (Input.GetKey(KeyCode.Space) && !isStickingToWall)
                 {
                     StickToWall();
                 }
