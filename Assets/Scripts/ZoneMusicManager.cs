@@ -3,12 +3,11 @@ using UnityEngine;
 
 /// <summary>
 /// Listens to <see cref="HeightTracker"/> and changes music whenever the
-/// player crosses a zone boundary, using short fades instead of hard cuts.
+/// player crosses a zone boundary, using short fades and proper stinger logic.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class ZoneMusicManager : MonoBehaviour
 {
-    // ───────────────────────────── data struct ──────────────────────────────
     [System.Serializable]
     public struct ZoneMusic
     {
@@ -16,44 +15,62 @@ public class ZoneMusicManager : MonoBehaviour
         public AudioClip loop;         // mandatory looping track
     }
 
-    // ───────────────────────── Inspector fields ─────────────────────────────
     [Header("References")]
-    public HeightTracker heightTracker;        // drag from the scene
-    public AudioSource musicSource;          // same GO, “Loop” ON
+    public HeightTracker heightTracker;   // drag from your scene
+    public AudioSource musicSource;       // same GameObject, Loop = ON
 
     [Header("Zone Setup")]
     [Tooltip("Meter values where each zone BEGINS (ascending order!).")]
     public float[] zoneBoundaries = { 0f, 11f, 25f };
 
-    [Tooltip("Music for each zone (array length must equal zoneBoundaries).")]
+    [Tooltip("Music for each zone (array length == zoneBoundaries.length).")]
     public ZoneMusic[] zoneMusic;
 
     [Header("Fade Settings")]
     [Tooltip("Seconds for fade‑out + fade‑in.")]
     [Range(0f, 5f)] public float fadeSeconds = 0.75f;
 
-    // ───────────────────────── internal state ───────────────────────────────
     int currentZone = -1;        // –1 forces first play
+    bool initialized = false;    // block Update until Setup is done
     Coroutine swapRoutine;
 
-    // ───────────────────────── Unity life‑cycle ─────────────────────────────
     void Start()
     {
-        if (musicSource == null) musicSource = GetComponent<AudioSource>();
+        if (musicSource == null)
+            musicSource = GetComponent<AudioSource>();
         musicSource.loop = true;
 
-        // Start zone‑0 immediately (hard cut at launch only)
-        ChangeMusic(GetZoneIndex(heightTracker.GetCurrentMeters()), forceCut: true);
+        // kick off our one‑frame delay + first‑zone setup
+        StartCoroutine(SetupInitialMusic());
+    }
+
+    IEnumerator SetupInitialMusic()
+    {
+        // wait one frame so HeightTracker.Update() has run
+        yield return null;
+
+        int zoneAtStart = GetZoneIndex(heightTracker.GetCurrentMeters());
+        ChangeMusicImmediate(zoneAtStart);
+
+        // now allow Update() to watch for real crossings
+        initialized = true;
     }
 
     void Update()
     {
-        int zone = GetZoneIndex(heightTracker.GetCurrentMeters());
-        if (zone != currentZone && swapRoutine == null)
-            swapRoutine = StartCoroutine(ChangeMusicRoutine(zone));
+        if (!initialized) return;
+
+        int newZone = GetZoneIndex(heightTracker.GetCurrentMeters());
+        if (newZone == currentZone) return;
+
+        int oldZone = currentZone;
+        currentZone = newZone;
+
+        if (swapRoutine != null)
+            StopCoroutine(swapRoutine);
+        swapRoutine = StartCoroutine(ChangeMusicRoutine(oldZone, newZone));
     }
 
-    // ───────────────────────── helpers ──────────────────────────────────────
     int GetZoneIndex(float meters)
     {
         for (int i = zoneBoundaries.Length - 1; i >= 0; i--)
@@ -61,40 +78,36 @@ public class ZoneMusicManager : MonoBehaviour
         return 0;
     }
 
-    void ChangeMusic(int targetZone, bool forceCut)
+    void ChangeMusicImmediate(int zone)
     {
-        if (forceCut && musicSource.isPlaying) musicSource.Stop();
+        if (musicSource.isPlaying)
+            musicSource.Stop();
 
-        // Play transition (ascending only)
-        if (targetZone > currentZone && zoneMusic[targetZone].transition != null)
-            musicSource.PlayOneShot(zoneMusic[targetZone].transition);
-
-        // Start new loop
-        musicSource.clip = zoneMusic[targetZone].loop;
+        musicSource.clip = zoneMusic[zone].loop;
         musicSource.loop = true;
         musicSource.Play();
 
-        currentZone = targetZone;
+        currentZone = zone;
     }
 
-    IEnumerator ChangeMusicRoutine(int targetZone)
+    IEnumerator ChangeMusicRoutine(int oldZone, int targetZone)
     {
-        bool ascending = targetZone > currentZone;
+        bool ascending = targetZone > oldZone;
 
-        /* 1) fade‑out current loop (if any) */
+        // 1) Fade‑out current loop
         if (musicSource.isPlaying)
         {
-            float startVol = musicSource.volume;
+            float origVol = musicSource.volume;
             for (float t = 0; t < fadeSeconds; t += Time.unscaledDeltaTime)
             {
-                musicSource.volume = Mathf.Lerp(startVol, 0f, t / fadeSeconds);
+                musicSource.volume = Mathf.Lerp(origVol, 0f, t / fadeSeconds);
                 yield return null;
             }
             musicSource.Stop();
-            musicSource.volume = startVol;               // restore for later
+            musicSource.volume = origVol;
         }
 
-        /* 2) play transition stinger if we’re climbing up */
+        // 2) Play transition only when climbing up
         if (ascending && zoneMusic[targetZone].transition != null)
         {
             musicSource.loop = false;
@@ -103,20 +116,18 @@ public class ZoneMusicManager : MonoBehaviour
             yield return new WaitWhile(() => musicSource.isPlaying);
         }
 
-        /* 3) fade‑in the new loop */
+        // 3) Fade‑in the new loop
         musicSource.loop = true;
         musicSource.clip = zoneMusic[targetZone].loop;
-        musicSource.volume = 0f;                         // start silent
+        musicSource.volume = 0f;
         musicSource.Play();
-
         for (float t = 0; t < fadeSeconds; t += Time.unscaledDeltaTime)
         {
             musicSource.volume = Mathf.Lerp(0f, 0.2f, t / fadeSeconds);
             yield return null;
         }
-        musicSource.volume = 0.2f;                         // ensure full volume
+        musicSource.volume = 0.2f;
 
-        currentZone = targetZone;
         swapRoutine = null;
     }
 }

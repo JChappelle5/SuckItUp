@@ -138325,7 +138325,7 @@ MonoBehaviour:
     loop: {fileID: 8300000, guid: 5e9cc116f8bd0f548860208092c57025, type: 3}
   - transition: {fileID: 8300000, guid: 3a3f132fd69b8d1478f0cf9ab581b29d, type: 3}
     loop: {fileID: 8300000, guid: ff6c3747f69a7534c975ff9c4c1d66e7, type: 3}
-  fadeSeconds: 3
+  fadeSeconds: 0.75
 --- !u!82 &2130609108
 AudioSource:
   m_ObjectHideFlags: 0
