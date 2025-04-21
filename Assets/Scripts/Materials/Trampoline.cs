@@ -13,13 +13,21 @@ public class Trampoline : MonoBehaviour
         {
             Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
 
-            Vector2 playerVelocity = rb.linearVelocity; // Get velocity at point of collision
+            // Get the velocity at the point of collision
+            Vector2 playerVelocity = rb.linearVelocity;
 
-            Debug.Log($"Trampoline Contact - Velocity = {playerVelocity}");
+            //caps magnitude to be at 1
+            float myValue;
+            myValue = Mathf.Clamp(playerVelocity.magnitude * 0.075f, 0f, 0.99f);
 
-            bounceForce = new Vector2(playerVelocity.x * 4f, Mathf.Abs(playerVelocity.magnitude) * 1.3f); // Calculate bounce force based on velocity of player at time of collision
+            // Calculate the bounce force based on the player's velocity magnitude and velocity x
+            float bounceForce = ((float)(Mathf.Abs(playerVelocity.x) * 5.25) * myValue); // Adjusted bounce force
 
-            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse); // Apply bounce force to player
+            // Set a cap for the maximum vertical bounce force (vertical velocity)
+            float maxBounceForce = 75f; 
+            bounceForce = Mathf.Min(bounceForce, maxBounceForce);
+
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceForce);
         }
     }
 }
