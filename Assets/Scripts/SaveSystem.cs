@@ -18,14 +18,17 @@ public class SaveSystem : MonoBehaviour
     public bool hasSaved = false;
     public VolumeSettings volumeSettings;
 
-    void Start()
+    void Awake()
     {
         // Find necessary objects/scripts
         player = GameObject.FindGameObjectWithTag("Player");
         timerScript = stopwatch.GetComponent<Stopwatch>();
         angelScript = player.GetComponent<Angel>();
         narratorScript = narratorAI.GetComponent<PlayerRageEvents>();
+    }
 
+    void Start()
+    {
         bool firstTimeLaunch = false;
 
         // Check if save file exists, if not create one
@@ -132,7 +135,7 @@ public class SaveSystem : MonoBehaviour
             model.sfxVolume = volumeSettings.sfxSlider.value;
             model.narratorVolume = volumeSettings.narratorSlider.value;
         }
-        else
+        else if(model.firstPlaythrough)
         {
             model.masterVolume = 1f;
             model.musicVolume = 1f;
