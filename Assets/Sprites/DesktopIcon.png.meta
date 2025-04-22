@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DesktopIcon_0: -4928937983269292340
+      DesktopIcon_1: 2397762508762439246
+      DesktopIcon_2: -4662073704853555688
+      DesktopIcon_3: -318839329138791702
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -148,7 +148,15 @@ public class Angel : MonoBehaviour
 
     void triggerAngel()
     {
-        StartCoroutine(SnakePickupSequence());
+        if (gameObject.activeInHierarchy)
+        {
+            StartCoroutine(SnakePickupSequence());
+        }
+        else
+        {
+            Debug.LogWarning("Tried to start coroutine on inactive object.");
+        }
+
     }
 
 
@@ -180,8 +188,15 @@ public class Angel : MonoBehaviour
             {
                 currentPlatform = null;
                 isOnMovingPlatform = false;
-
-                StartCoroutine(EnableSavingAfterDelay(0.25f));
+                
+                if (gameObject.activeInHierarchy)
+                {
+                    StartCoroutine(EnableSavingAfterDelay(0.25f));
+                }
+                else
+                {
+                    Debug.LogWarning("Tried to start coroutine on inactive object.");
+                }
             }
         }
     }
