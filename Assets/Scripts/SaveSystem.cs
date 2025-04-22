@@ -83,6 +83,8 @@ public class SaveSystem : MonoBehaviour
             model.narratorVolume = volumeSettings.narratorSlider.value;
         }
 
+        model.firstPlaythrough = false;
+
         // Save file
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + SAVE_FILENAME, json);
@@ -101,6 +103,9 @@ public class SaveSystem : MonoBehaviour
         model.playerPos = position;
         model.playerRotation = 0f;
         model.playerVelocity = Vector2.zero;
+        
+        if(!File.Exists(Application.persistentDataPath + SAVE_FILENAME))
+            model.firstPlaythrough = true;
 
         // Default time (0)
         model.timeElapsed = 0f;
@@ -120,7 +125,7 @@ public class SaveSystem : MonoBehaviour
             model.consecNewHeight = 0;
         }
         
-        if(!firstTimeLaunch && volumeSettings != null)
+        if(!firstTimeLaunch && volumeSettings != null && !model.firstPlaythrough)
         {
             model.masterVolume = volumeSettings.masterSlider.value;
             model.musicVolume = volumeSettings.musicSlider.value;
@@ -134,6 +139,8 @@ public class SaveSystem : MonoBehaviour
             model.sfxVolume = 1f;
             model.narratorVolume = 1f;
         }
+
+        model.firstPlaythrough = false;
 
         // Save filea
         string json = JsonUtility.ToJson(model);
@@ -235,4 +242,6 @@ public class SaveModel
     public float musicVolume;
     public float sfxVolume;
     public float narratorVolume;
+
+    public bool firstPlaythrough;
 }

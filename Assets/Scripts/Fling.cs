@@ -15,7 +15,7 @@ public class PlungerMovement : MonoBehaviour
     public Transform bottomDetector;
     public float groundCheckRadius = 0.1f; // For ground check
     public float wallCheckRadius = 0.1f;   // For wall check
-    private bool wasGrounded = false;
+    private bool wasGrounded = true;
     private float storedLeanAngle = 0f;
     public float normalFactor = 1f;
     public float slowdownFactor = 0.7f;
@@ -31,11 +31,10 @@ public class PlungerMovement : MonoBehaviour
     public Sprite PlayerRight4;
     public bool TimerOn = false;
     public float stickTime;
-    public bool isCurrentlyGrounded;
+    public bool isCurrentlyGrounded = false;
     public GameObject tilemap;
     public GameObject slimeTilemap;
     private bool isOnSlime = false;
-
     private bool isOnMovingPlatform = false;
     public float wedgeTimer = 0f;
     private int moveKeyPressCount = 0;
@@ -45,11 +44,15 @@ public class PlungerMovement : MonoBehaviour
     public Transform topDetector;
     public bool isCurrentlyOnSide;
 
-
     void Awake()
     {
         stickTime = 3f;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    void Start()
+    {
+        
     }
 
     void Update()
@@ -217,7 +220,9 @@ public class PlungerMovement : MonoBehaviour
         float input = -Input.GetAxisRaw("Horizontal");
         if (input != 0)
         {
-            float rotation = input * 10.15f;
+            float maxRotationPerFrame = 10.15f;
+            float rotation = Mathf.Clamp(input * 10.15f, -maxRotationPerFrame, maxRotationPerFrame);
+
             rb.MoveRotation(rb.rotation + rotation);
         }
     }
